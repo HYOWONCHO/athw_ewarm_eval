@@ -355,6 +355,8 @@
                     <state>$PROJ_DIR$\STM32-base-STM32Cube\CMSIS\ARM\inc</state>
                     <state>$PROJ_DIR$\STM32-base-STM32Cube\CMSIS\STM32L4xx\inc</state>
                     <state>$PROJ_DIR$\STM32-base-STM32Cube\HAL\STM32L4xx\inc</state>
+                    <state>$PROJ_DIR$\util\inc</state>
+                    <state>$PROJ_DIR$\ATHW_EVAL_BSP\inc</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -686,7 +688,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>208</hasPrio>
+                <hasPrio>1</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -2193,6 +2195,9 @@
             <name>BSP</name>
             <group>
                 <name>ATHW_EVAL</name>
+                <file>
+                    <name>$PROJ_DIR$\ATHW_EVAL_BSP\src\athw_eval_it.c</name>
+                </file>
             </group>
             <group>
                 <name>Components</name>
@@ -2507,5 +2512,17 @@
                 <name>$PROJ_DIR$\STM32-base-STM32Cube\HAL\STM32L4xx\src\stm32l4xx_ll_utils.c</name>
             </file>
         </group>
+    </group>
+    <group>
+        <name>Utils</name>
+        <file>
+            <name>$PROJ_DIR$\util\src\x_mem.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\util\src\x_memprint.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\util\src\x_time.c</name>
+        </file>
     </group>
 </project>

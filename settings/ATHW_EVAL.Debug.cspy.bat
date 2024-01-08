@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files\IAR Systems\Embedded Workbench 9.2\common\bin\cspybat" -f "C:\workspace\ATHW_ETRI\athw_ewarm\settings\ATHW_EVAL.Debug.general.xcl" --backend -f "C:\workspace\ATHW_ETRI\athw_ewarm\settings\ATHW_EVAL.Debug.driver.xcl" 
+"C:\Program Files\IAR Systems\Embedded Workbench 9.2\common\bin\cspybat" -f "C:\workspace\ATHW_ETRI\athw_ewarm_eval\settings\ATHW_EVAL.Debug.general.xcl" --backend -f "C:\workspace\ATHW_ETRI\athw_ewarm_eval\settings\ATHW_EVAL.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files\IAR Systems\Embedded Workbench 9.2\common\bin\cspybat" -f "C:\workspace\ATHW_ETRI\athw_ewarm\settings\ATHW_EVAL.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\workspace\ATHW_ETRI\athw_ewarm\settings\ATHW_EVAL.Debug.driver.xcl" 
+"C:\Program Files\IAR Systems\Embedded Workbench 9.2\common\bin\cspybat" -f "C:\workspace\ATHW_ETRI\athw_ewarm_eval\settings\ATHW_EVAL.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\workspace\ATHW_ETRI\athw_ewarm_eval\settings\ATHW_EVAL.Debug.driver.xcl" 
 
 @echo off 
 :end

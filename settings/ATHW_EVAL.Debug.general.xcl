@@ -1,0 +1,13 @@
+"C:\Program Files\IAR Systems\Embedded Workbench 9.2\arm\bin\armPROC.dll" 
+
+"C:\Program Files\IAR Systems\Embedded Workbench 9.2\arm\bin\armSTLINK.dll" 
+
+"C:\workspace\ATHW_ETRI\athw_ewarm\Debug\Exe\ATHW_EVAL.out" 
+
+--plugin="C:\Program Files\IAR Systems\Embedded Workbench 9.2\arm\bin\armLibSupportUniversal.dll" 
+
+--flash_loader="$/config/flashloader/ST/FlashSTM32L4AxxG.board" 
+
+
+
+

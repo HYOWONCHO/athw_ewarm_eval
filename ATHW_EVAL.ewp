@@ -2188,6 +2188,9 @@
         <file>
             <name>$PROJ_DIR$\App\source\main.c</name>
         </file>
+        <file>
+            <name>$PROJ_DIR$\App\source\stm32l4xx_it.c</name>
+        </file>
     </group>
     <group>
         <name>Drivers</name>

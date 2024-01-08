@@ -386,8 +386,11 @@ int x_memset(void *dest, int count, uint8_t value)
 {
     //X_RET_VALIDATE_ERRORCODE(dest != NULL, -EINVAL);
 
-    X_RET_VAL_IF_FAIL((sz_zero>0), -EINVAL);
-    X_RET_VAL_IF_FAIL((dest!=NULL), -EINVAL);
+    //X_RET_VAL_IF_FAIL((sz_zero>0), -EINVAL);
+    //X_RET_VAL_IF_FAIL((dest!=NULL), -EINVAL);
+    
+    X_RET_VAL_IF_FAIL((count!=0), -ESZEROL);
+    X_RET_VAL_IF_FAIL((dest!=NULL), -ESNULLP);
 
     x_mem_prim_set(dest, count, value);
 
@@ -400,8 +403,8 @@ int x_memzero(void *dest, int count)
 {
     //X_RET_VALIDATE_ERRORCODE(dest != NULL, -EINVAL);
 
-    X_RET_VAL_IF_FAIL((sz_zero>0), -EINVAL);
-    X_RET_VAL_IF_FAIL((dest!=NULL), -EINVAL);
+    X_RET_VAL_IF_FAIL((count!=0), -ESZEROL);
+    X_RET_VAL_IF_FAIL((dest!=NULL), -ESNULLP);
 
     x_mem_prim_set(dest, count, 0);
 

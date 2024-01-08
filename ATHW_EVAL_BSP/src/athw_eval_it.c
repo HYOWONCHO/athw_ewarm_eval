@@ -27,6 +27,9 @@
 
 int athw_eval_it_init(void *priv)
 {
+  
+  int ret = -1;
+  return ret;
 
 }
 

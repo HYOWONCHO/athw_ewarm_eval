@@ -346,3 +346,6 @@ Debug/Obj/Utils_15430540244826799469.dir/x_mem.o
 Debug/Obj/Utils_15430540244826799469.dir/x_memprint.o
 Debug/Obj/Utils_15430540244826799469.dir/x_time.o
 Debug/BrowseInfo/ATHW_EVAL_6662199345816623431.dir/athw_eval_it.pbi.dep
+*.pbi
+*.dep
+*.xcl

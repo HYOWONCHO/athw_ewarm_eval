@@ -30,7 +30,7 @@ extern "C" {
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
+//void error_handler(void);
 
 /* USER CODE BEGIN EFP */
 

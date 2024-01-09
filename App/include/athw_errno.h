@@ -4,6 +4,10 @@
 #include <errno.h>
 
 
+#define ERRNGATE(x)		( -(x) )	/*! Negative */
+#define ERRPGATE(x)		(x)			/*! Positive */
+
+
 #ifndef ESNULLP
 #define ESNULLP         ( 400 )       /*!< null ptr                    */
 #endif
@@ -56,6 +60,10 @@
 ///< EOK may or may not be defined in errno.h 
 #ifndef EOK
 #define EOK             ( 0 )
+#endif
+
+#ifndef EFAIL
+#define EFAIL			( 1 )
 #endif
 
 #endif /* __ATHW_ERRNO_H__ */

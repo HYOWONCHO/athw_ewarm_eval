@@ -54,8 +54,7 @@ int main(void)
     x_memzero(ifhnd.h_tpmspi, sizeof tpmspi);
 
 
-
-
+    // ATHW Device peripheral and low device setting
     ret = athw_eval_it_init((void *)&ifhnd);
     if( ret != EOK ) {
         error_handler(NULL);

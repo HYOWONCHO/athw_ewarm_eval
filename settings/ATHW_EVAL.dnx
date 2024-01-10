@@ -44,8 +44,8 @@
         <MemConfigValue />
     </PlDriver>
     <ArmDriver>
-        <EnforceMemoryConfiguration>1</EnforceMemoryConfiguration>
         <EnableCache>0</EnableCache>
+        <EnforceMemoryConfiguration>1</EnforceMemoryConfiguration>
     </ArmDriver>
     <StLinkDriver>
         <LeaveTargetRunning>_ 0</LeaveTargetRunning>
@@ -77,11 +77,11 @@
     </JLinkDriver>
     <SWOTraceHWSettings>
         <OverrideDefaultClocks>0</OverrideDefaultClocks>
-        <CpuClock>707406378</CpuClock>
-        <ClockAutoDetect>1</ClockAutoDetect>
-        <ClockWanted>50000000</ClockWanted>
-        <JtagSpeed>50000000</JtagSpeed>
-        <Prescaler>14</Prescaler>
+        <CpuClock>72000000</CpuClock>
+        <ClockAutoDetect>0</ClockAutoDetect>
+        <ClockWanted>2000000</ClockWanted>
+        <JtagSpeed>2000000</JtagSpeed>
+        <Prescaler>36</Prescaler>
         <TimeStampPrescIndex>0</TimeStampPrescIndex>
         <TimeStampPrescData>0</TimeStampPrescData>
         <PcSampCYCTAP>1</PcSampCYCTAP>
@@ -107,6 +107,10 @@
         <CustomRanges5>0 3758096384 536870912 2 0</CustomRanges5>
         <CustomRangesText5>Private peripheral</CustomRangesText5>
     </PlCacheRanges>
+    <SfrWindow>
+        <Show>1 1</Show>
+        <Sort>4 0</Sort>
+    </SfrWindow>
     <Trace2>
         <Enabled>0</Enabled>
         <ShowSource>0</ShowSource>

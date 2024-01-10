@@ -23,6 +23,7 @@
 
 
 #include "main.h"
+#include "stm32l4xx.h"
 extern void error_handler(void *priv);
 
 

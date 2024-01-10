@@ -275,7 +275,7 @@ static int x_memcpy_s(void *dest, int dmax, const char *src, int smax)
     const uint8_t *sp;
 
     dp = dest;
-    sp = src;
+    sp = (uint8_t *)src;
 
     X_RET_VAL_IF_FAIL((dp!=NULL), -1);
     X_RET_VAL_IF_FAIL((sp!=NULL), -1);
@@ -370,8 +370,8 @@ int x_memcpy(void *dst, int in_sizebytes, const void *src, int count)
         memset(dst, 0, in_sizebytes);
 
 
-        //ret = -EINVAL;
-        ret = -1;
+        ret = ERRNGATE(ESLEMAX | ESNULLP);
+        //ret = -1;
         goto done;
     }
 

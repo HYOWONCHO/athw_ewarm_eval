@@ -2186,6 +2186,12 @@
             </file>
         </group>
         <file>
+            <name>$PROJ_DIR$\App\source\athw_system.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\App\source\handler.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\App\source\main.c</name>
         </file>
         <file>

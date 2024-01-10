@@ -21,8 +21,12 @@
  * @copyright Copyright 2020 Trustkey. All rights reserved*
  */         
 
+#include <stdio.h>
 
 #include "configs.h"
+#include "athw_errno.h"
+#include "athw_system.h"
+#include "athw_eval_it.h"
 
 extern void error_handler(void *priv);
 
@@ -34,16 +38,16 @@ extern void error_handler(void *priv);
  * 
  * @return int 
  */
-static int athw_system_hal_init(void)
-{
-    int ret = EOK;
-    HAL_Init();
-
-    __HAL_RCC_SYSCFG_CLK_ENABLE();
-    __HAL_RCC_PWR_CLK_ENABLE();
-
-    return ret;
-}
+//static int athw_system_hal_init(void)
+//{
+//    int ret = EOK;
+//    HAL_Init();
+//
+//    __HAL_RCC_SYSCFG_CLK_ENABLE();
+//    __HAL_RCC_PWR_CLK_ENABLE();
+//
+//    return ret;
+//}
 
 /**
  * @fn athw_system_clock_config 
@@ -53,40 +57,40 @@ static int athw_system_hal_init(void)
  * 
  * @retval None
  */
-static void athw_system_clock_config(void)
-{
-    RCC_OscInitTypeDef osc = {0};
-    RCC_ClkInitTypeDef clk = {0};
-
-    // Configure the main internal regulator output voltage
-    if(HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK) {
-        error_handler();
-    }
-
-    // Initializes the RCC Oscillators according to the specified paramters
-    osc.OscillatorType = RCC_OSCILLATORTYPE_MSI;
-    osc.MSIState = RCC_MSI_ON;
-    osc.MSICalibrationValue = 0;
-    osc.MSIClockRange = RCC_MSIRANGE_6;
-    osc.PLL.PLLState = RCC_PLL_NONE:
-    if(HAL_RCC_OscConfig(&osc) != HAL_OK) {
-        error_handler();
-    }
-
-    // Initialize the CPU, AHB and APB buses clocks
-    clk.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK 
-                    | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-    clk.SYSCLKSource = RCC_SYSCLKSOURCE_MSI;
-    clk.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    clk.APB1CLKDivider = RCC_HCLK_DIV2;
-    clk.APB2CLKDivider = RCC_HCLK_DIV1;
-
-    if(HAL_RCC_ClockConfig(&clk, FLASH_LATENCY, 0) != HAL_OK) {
-        error_handler();
-    }
-
-    return;
-}
+//static void athw_system_clock_config(void)
+//{
+//    RCC_OscInitTypeDef osc = {0};
+//    RCC_ClkInitTypeDef clk = {0};
+//
+//    // Configure the main internal regulator output voltage
+//    if(HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK) {
+//        error_handler(NULL);
+//    }
+//
+//    // Initializes the RCC Oscillators according to the specified paramters
+//    osc.OscillatorType = RCC_OSCILLATORTYPE_MSI;
+//    osc.MSIState = RCC_MSI_ON;
+//    osc.MSICalibrationValue = 0;
+//    osc.MSIClockRange = RCC_MSIRANGE_6;
+//    osc.PLL.PLLState = RCC_PLL_NONE;
+//    if(HAL_RCC_OscConfig(&osc) != HAL_OK) {
+//        error_handler(NULL);
+//    }
+//
+//    // Initialize the CPU, AHB and APB buses clocks
+//    clk.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+//                    | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+//    clk.SYSCLKSource = RCC_SYSCLKSOURCE_MSI;
+//    clk.AHBCLKDivider = RCC_SYSCLK_DIV1;
+//    clk.APB1CLKDivider = RCC_HCLK_DIV2;
+//    clk.APB2CLKDivider = RCC_HCLK_DIV1;
+//
+//    if(HAL_RCC_ClockConfig(&clk, FLASH_LATENCY_0) != HAL_OK) {
+//        error_handler(NULL);
+//    }
+//
+//    return;
+//}
 
 static void athw_eval_gpio_init(void)
 {
@@ -146,19 +150,23 @@ static void athw_eval_gpio_init(void)
 
 static void athw_eval_uart_init(UART_HandleTypeDef *com)
 {  
-    com.Instance = COM_UART_PORT;
-    com.Init.BaudRate = COM_UART_SPEED;
-    com.Init.WordLength = UART_WORDLENGTH_8B;
-    com.Init.StopBits = UART_STOPBITS_1;
-    com.Init.Parity = UART_PARITY_NONE;
-    com.Init.Mode = UART_MODE_TX_RX;
-    com.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-    com.Init.OverSampling = UART_OVERSAMPLING_16;
-    com.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-    com.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-    if (HAL_UART_Init(&com) != HAL_OK)
+    if(com == NULL) {
+        error_handler(NULL);
+    }
+
+    com->Instance = COM_UART_PORT;
+    com->Init.BaudRate = COM_UART_SPEED;
+    com->Init.WordLength = UART_WORDLENGTH_8B;
+    com->Init.StopBits = UART_STOPBITS_1;
+    com->Init.Parity = UART_PARITY_NONE;
+    com->Init.Mode = UART_MODE_TX_RX;
+    com->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    com->Init.OverSampling = UART_OVERSAMPLING_16;
+    com->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+    com->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+    if (HAL_UART_Init(com) != HAL_OK)
     {
-        error_handler();
+        error_handler(NULL);
     }
     
 
@@ -247,7 +255,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
          */
 
         gpio.Pin = GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7;
-        HAL_GPIO_DeInit(GPIOA, gpio.pin);
+        HAL_GPIO_DeInit(GPIOA, gpio.Pin);
     }
     else if(hspi->Instance == SPI2) {
         __HAL_RCC_SPI2_CLK_DISABLE();
@@ -261,7 +269,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
 
         gpio.Pin = GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
 
-        HAL_GPIO_DeInit(GPIOB, gpio.pin);
+        HAL_GPIO_DeInit(GPIOB, gpio.Pin);
 
     }
 
@@ -280,14 +288,14 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
     GPIO_InitTypeDef gpio = {0};
     RCC_PeriphCLKInitTypeDef clk = {0};
 
-    if(huart->Instance = USART1) {
-        clk.PeriphClockSelection = RCC_PERIPHCLK_USUART1;
+    if(huart->Instance == USART1) {
+        clk.PeriphClockSelection = RCC_PERIPHCLK_USART1;
         clk.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
         if(HAL_RCCEx_PeriphCLKConfig(&clk) != HAL_OK) {
-            error_handler();
+            error_handler(NULL);
         }
 
-        __HAL_RCC_USUART1_CLK_ENABLE();
+        __HAL_RCC_USART1_CLK_ENABLE();
         __HAL_RCC_GPIOB_CLK_ENABLE();
 
         /*
@@ -300,7 +308,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
         gpio.Mode = GPIO_MODE_AF_PP;
         gpio.Pull = GPIO_NOPULL;
         gpio.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        gpio.Alternate = GPIO_AF7_USUART1;
+        gpio.Alternate = GPIO_AF7_USART1;
         HAL_GPIO_Init(GPIOB, &gpio);
     }
 
@@ -317,9 +325,9 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 {
     GPIO_InitTypeDef gpio = {0};
 
-    if(huart->Instance = USART1) {
+    if(huart->Instance == USART1) {
        
-        __HAL_RCC_USUART1_CLK_DISABLE();
+        __HAL_RCC_USART1_CLK_DISABLE();
 
         /*
             USUART1 GPIO Configuration
@@ -328,7 +336,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
         */
 
         gpio.Pin = GPIO_PIN_6 | GPIO_PIN_7;
-        HAL_GPIO_DeInit(GPIOB, gpio.pin);
+        HAL_GPIO_DeInit(GPIOB, gpio.Pin);
     }
 
 }
@@ -346,7 +354,15 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
  */
 int athw_eval_it_init(void *priv)
 {
+    athw_if_handle_t *hnd = NULL;
     int ret = ERRNGATE(EFAIL);
+
+    if(priv == NULL) {
+        ret = ERRNGATE(ESNULLP);
+        goto errdone;
+    }
+
+    hnd = (athw_if_handle_t *)priv;
 
     // Reset of all perpheral
     athw_system_hal_init();
@@ -355,9 +371,11 @@ int athw_eval_it_init(void *priv)
     athw_system_clock_config();
 
 
+    athw_eval_gpio_init();
+    athw_eval_uart_init(hnd->h_debuguart);
 
-
-
+    ret = EOK;
+errdone:
     return ret;
 }
 

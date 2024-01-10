@@ -349,3 +349,4 @@ Debug/BrowseInfo/ATHW_EVAL_6662199345816623431.dir/athw_eval_it.pbi.dep
 *.pbi
 *.dep
 *.xcl
+*.o

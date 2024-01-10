@@ -9,6 +9,7 @@
 #include "x_defmacro.h"
 #include "x_typedef.h"
 #include "athw_errno.h"
+#include "x_mem.h"
 
 
 void x_mem_print_bin(const uint8_t *title, const uint8_t *buffer, uint32_t length);

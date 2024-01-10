@@ -84,7 +84,7 @@
                 </option>
                 <option>
                     <name>OCDynDriverList</name>
-                    <state>STLINK_ID</state>
+                    <state>JLINK_ID</state>
                 </option>
                 <option>
                     <name>OCLastSavedByProductVersion</name>
@@ -112,7 +112,7 @@
                 </option>
                 <option>
                     <name>FlashLoadersV3</name>
-                    <state>$/config/flashloader/ST/FlashSTM32L4AxxG.board</state>
+                    <state>$PROJ_DIR$\ATHW_EVAL.board</state>
                 </option>
                 <option>
                     <name>OCImagesSuppressCheck1</name>
@@ -973,7 +973,7 @@
                 <option>
                     <name>CCJLinkResetList</name>
                     <version>6</version>
-                    <state>5</state>
+                    <state>7</state>
                 </option>
                 <option>
                     <name>CCJLinkInterfaceCmdLine</name>
@@ -1621,7 +1621,7 @@
             </plugin>
             <plugin>
                 <file>$TOOLKIT_DIR$\plugins\rtos\uCOS-III\uCOS-III-KA-CSpy.ewplugin</file>
-                <loadFlag>1</loadFlag>
+                <loadFlag>0</loadFlag>
             </plugin>
             <plugin>
                 <file>$EW_DIR$\common\plugins\Orti\Orti.ENU.ewplugin</file>

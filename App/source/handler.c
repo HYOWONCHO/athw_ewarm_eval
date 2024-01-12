@@ -31,6 +31,8 @@ void error_handler(void *priv)
 {
     (void)priv;
 
+	printf(" ~~~ ERROR ~~~ \r\n");
+
     __disable_irq();
 	 while(1) {
         // TODO : describe the error related description

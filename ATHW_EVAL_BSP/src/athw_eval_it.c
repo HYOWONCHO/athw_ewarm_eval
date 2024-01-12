@@ -28,6 +28,8 @@
 #include "athw_system.h"
 #include "athw_eval_it.h"
 
+//#include "stm32l4xx_hal_usart.h"
+
 extern void error_handler(void *priv);
 
 
@@ -373,6 +375,8 @@ int athw_eval_it_init(void *priv)
 
     athw_eval_gpio_init();
     athw_eval_uart_init(hnd->h_debuguart);
+
+    printf("ATHW Evaluation Board Device Init done !!! \r\n");
 
     ret = EOK;
 errdone:

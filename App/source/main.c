@@ -6,14 +6,60 @@
 extern void error_handler(void *priv);
 static UART_HandleTypeDef dbguart;
 
+#ifdef __GNUC__
+/* With GCC/RAISONANCE, small msg_info (option LD Linker->Libraries->Small msg_info
+   set to 'Yes') calls __io_putchar() */
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#define GETCHAR_PROTOTYPE int __io_getchar(void)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#define GETCHAR_PROTOTYPE int fgetc(FILE *f)
+#endif
+
+PUTCHAR_PROTOTYPE
+{
+    (void)f;
+    // place your implementation of futpc here
+    while( HAL_UART_Transmit(&dbguart, (uint8_t *)&ch, 1, 30000) != HAL_OK) {
+        ;
+    }
+
+    return ch;
+}
+
+GETCHAR_PROTOTYPE
+{
+    (void)f;
+    uint8_t ch = 0;
+    while( HAL_UART_Receive(&dbguart, (uint8_t *)&ch, 1, 30000) != HAL_OK) {
+        ;
+    }
+
+    return ch;
+}
+
+#if 0
+int __io_putchar(int ch) 
+{
+    uint8_t c[1];
+    c[0] = ch & 0x00FF;
+
+
+    HAL_UART_Transmit(&dbguart, &*c, 1, 10);
+    return ch;
+}
+
 int _write(int32_t file, uint8_t *ptr, int32_t len) 
 {
     (void)file;
 
-    if( HAL_UART_Transmit(&dbguart, ptr, len, 0xFFFF) == HAL_OK )
-        return len;
-    else
-        return 0;
+    int idx;
+
+    for( idx = 0; idx < len; idx++ ) {
+        __io_putchar(*ptr++);
+    }
+
+    return len;
 
     //return HAL_UART_Transmit(&huart1, ptr, len, 0xFFFF);
 }
@@ -34,6 +80,7 @@ void _ttywrch(int ch) {
     * Need implementing with UART here. */
     _write(0, (uint8_t *)&ch, 1);
 }
+#endif
 
 int main(void)
 { 
@@ -63,5 +110,5 @@ int main(void)
     do {
     } while (1);
 
-    return 0;      
+    //return 0;      
 }

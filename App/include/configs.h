@@ -7,6 +7,10 @@ extern "C" {
 
 #include "stm32l4xx_hal.h"
 
+#define ATHW_SYSTEM_MAJOR	0
+#define ATHW_SYSTEM_MINOR	0
+#define ATHW_SYSTEM_BUILD	101
+
 #define TPM_SPI_PORT		SPI1
 #define TPM_SPI_MODE		SPI_MODE_MASTER
 

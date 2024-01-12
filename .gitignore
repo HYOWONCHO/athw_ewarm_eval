@@ -570,3 +570,5 @@ Debug/List/Utils_15430540244826799469.dir/x_memprint.s
 Debug/List/Utils_15430540244826799469.dir/x_time.lst
 Debug/List/Utils_15430540244826799469.dir/x_time.s
 *.wsdt
+*.lst
+Debug/List/ATHW_EVAL_6662199345816623431.dir/athw_tpm_spi.s

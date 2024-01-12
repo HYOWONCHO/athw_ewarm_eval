@@ -59,20 +59,20 @@ typedef uint8_t    bool;
 
 #define MAX_SPI_BYTES              32
 
-//#pragma push(1)
-typedef struct __attribute__((packed)) _io_tlv_t {
+#pragma pack(1)
+typedef struct  _io_tlv_t {
 	void *tx;			/*! Transfer buffer pointer*/
 	int txlen;			/*! Length of Transfer */
 	void *rx;			/*! Receive buffer pointer */
 	int *rxlen;			/*! Length of Receive */
-}__attribute__((packed)) io_tlv_t;
+}io_tlv_t;
 
-typedef  struct __attribute__((packed)) _spi_ioctx_t {
+typedef  struct  _spi_ioctx_t {
 	void *h_ctx;		/*! Device handle*/
 	void *h_io;			/*! IO device handle (like UART, I2C and SPI) */
 	io_tlv_t ioctx;		/*! Data exchange structure*/
 }spi_ioctx_t;
-//#pragma pop
+#pragma pack()
 
 
 #ifdef __cplusplus

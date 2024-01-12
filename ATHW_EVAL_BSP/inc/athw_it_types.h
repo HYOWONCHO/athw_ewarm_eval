@@ -16,8 +16,10 @@ extern "C" {
 #include "x_log.h"
 #include "x_typedef.h"
 
+//#define _IFPACKED				(__attribute__((packed)))
+
 #ifndef bool
-typedef uint8_t    bool;
+typedef uint8_t    bool:1;
 #endif
 
 #ifndef true
@@ -47,7 +49,7 @@ typedef uint8_t    bool;
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 #endif
 
-#define BIT(nr)         (1UL << (nr))
+#definee BIT(nr)         (1UL << (nr))
 
 #define DIV_ROUND_UP(n,d) (((n) + (d) - 1) / (d))
 
@@ -58,6 +60,14 @@ typedef uint8_t    bool;
 #define MAX_SPI_BYTES              32
 
 
+typedef  struct _spi_ioctx_t {
+	void *h_ctx;
+	void *h_io;
+	uint8_t *txbuf;
+	uint8_t *rxbuf;
+	uint16_t xfersz;
+	
+}spi_ioctx_t;
 
 
 #ifdef __cplusplus

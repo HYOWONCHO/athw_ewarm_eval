@@ -1,0 +1,374 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V9.50.1.380/W64 for ARM         12/Jan/2024  16:55:48
+# Copyright 1999-2023 IAR Systems AB.
+#
+#    Cpu mode                     =  thumb
+#    Endian                       =  little
+#    Source file                  =
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\ATHW_EVAL_BSP\src\athw_tpm_spi.c
+#    Command line                 =
+#        -f
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\Debug\Obj\ATHW_EVAL_6662199345816623431.dir\athw_tpm_spi.o.rsp
+#        (C:\workspace\ATHW_ETRI\athw_ewarm_eval\ATHW_EVAL_BSP\src\athw_tpm_spi.c
+#        -D STM32L476xx -D USE_HAL_DRIVER -D USE_STM32L476G_EVAL_REVB -D
+#        USE_IOEXPANDER -lC
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\Debug\List\ATHW_EVAL_6662199345816623431.dir
+#        -lA
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\Debug\List\ATHW_EVAL_6662199345816623431.dir
+#        -o
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\Debug\Obj\ATHW_EVAL_6662199345816623431.dir
+#        --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+#        --no_clustering --no_scheduling --debug --endian=little
+#        --cpu=Cortex-M4 -e --fpu=VFPv4_sp --dlib_config "C:\Program Files\IAR
+#        Systems\Embedded Workbench 9.2\arm\inc\c\DLib_Config_Full.h" -I
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\App\include\ -I
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\STM32-base-STM32Cube\CMSIS\ARM\inc\
+#        -I
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\STM32-base-STM32Cube\CMSIS\STM32L4xx\inc\
+#        -I
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\STM32-base-STM32Cube\HAL\STM32L4xx\inc\
+#        -I C:\workspace\ATHW_ETRI\athw_ewarm_eval\util\inc\ -I
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\ATHW_EVAL_BSP\inc\ -On)
+#        --dependencies=n
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\Debug\Obj\ATHW_EVAL_6662199345816623431.dir\athw_tpm_spi.o.iar_deps
+#    Locale                       =  C
+#    List file                    =
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\Debug\List\ATHW_EVAL_6662199345816623431.dir\athw_tpm_spi.lst
+#    Object file                  =
+#        C:\workspace\ATHW_ETRI\athw_ewarm_eval\Debug\Obj\ATHW_EVAL_6662199345816623431.dir\athw_tpm_spi.o
+#    Runtime model:                  
+#      __CPP_Runtime              =  1
+#      __SystemLibrary            =  DLib
+#      __dlib_file_descriptor     =  1
+#      __dlib_full_locale_support =  1
+#      __dlib_version             =  6
+#      __iar_require _Printf         
+#
+###############################################################################
+
+C:\workspace\ATHW_ETRI\athw_ewarm_eval\ATHW_EVAL_BSP\src\athw_tpm_spi.c
+      1          /********************************************************************************
+      2           * Copyright (C) 2020 by Trustkey                                               * 
+      3           * This file is part of  Project                                                *   
+      4           * This software contains confidential information of TrustKey Co.,Ltd.         *
+      5           * and unauthorized distribution of this software, or any portion of it, are    *
+      6           * prohibited.                                                                  *
+      7           ********************************************************************************/
+      8          
+      9          /**
+     10           * @file athw_tpm_spi.c
+     11           * TPM SPI interface
+     12           *
+     13           * @anchor ANCHOR_SPI
+     14           * @author User, (c) Trustkey
+     15           * @version Draft 
+     16           * @date 011024
+     17           * @bug No known bugs.
+     18           * @note 
+     19           * 
+     20           * @copyright Copyright 2020 Trustkey. All rights reserved*
+     21           */         
+     22          
+     23          #include "athw_tpmio_types.h"
+     24          #include "athw_it_types.h"
+     25          #include "x_common.h"
+     26          
+
+   \                                 In section .text, align 4, keep-with-next
+     27          int athw_tpmiocb_spi(void *handle) 
+     28          {
+   \                     athw_tpmiocb_spi: (+1)
+   \        0x0   0xE92D 0x4FF8      PUSH     {R3-R11,LR}
+   \        0x4   0x0007             MOVS     R7,R0
+     29          	int ret = EOK;
+   \        0x6   0xF05F 0x0800      MOVS     R8,#+0
+     30          	SPI_HandleTypeDef *ctx = (SPI_HandleTypeDef *)(((spi_ioctx_t *)handle)->h_io);
+   \        0xA   0x687C             LDR      R4,[R7, #+4]
+     31          	HAL_StatusTypeDef status;
+     32          	int timeout = TPM_SPI_WAIT_RETRY;
+   \        0xC   0xF05F 0x0932      MOVS     R9,#+50
+     33          	
+     34          	uint8_t *txbuf = (uint8_t *)(((spi_ioctx_t *)handle)->ioctx.tx);
+   \       0x10   0x68BD             LDR      R5,[R7, #+8]
+     35          	uint8_t *rxbuf = (uint8_t *)(((spi_ioctx_t *)handle)->ioctx.tx); 
+   \       0x12   0x68BE             LDR      R6,[R7, #+8]
+     36          	uint16_t xfersz = (uint16_t)(((spi_ioctx_t *)handle)->ioctx.txlen);
+   \       0x14   0xF8D7 0xA00C      LDR      R10,[R7, #+12]
+     37          
+     38          	X_RET_VAL_IF_FAIL((txbuf != NULL), ERRNGATE(ESNULLP));
+   \       0x18   0x2D00             CMP      R5,#+0
+   \       0x1A   0xD105             BNE.N    ??athw_tpmiocb_spi_1
+   \       0x1C   0x493F             LDR.N    R1,??athw_tpmiocb_spi_0
+   \       0x1E   0x4840             LDR.N    R0,??athw_tpmiocb_spi_0+4
+   \       0x20   0x.... 0x....      BL       printf
+   \       0x24   0x483F             LDR.N    R0,??athw_tpmiocb_spi_0+8
+   \       0x26   0xE076             B.N      ??athw_tpmiocb_spi_2
+     39          	X_RET_VAL_IF_FAIL((rxbuf != NULL), ERRNGATE(ESNULLP)); 
+   \                     ??athw_tpmiocb_spi_1: (+1)
+   \       0x28   0x2E00             CMP      R6,#+0
+   \       0x2A   0xD105             BNE.N    ??athw_tpmiocb_spi_3
+   \       0x2C   0x493E             LDR.N    R1,??athw_tpmiocb_spi_0+12
+   \       0x2E   0x483C             LDR.N    R0,??athw_tpmiocb_spi_0+4
+   \       0x30   0x.... 0x....      BL       printf
+   \       0x34   0x483B             LDR.N    R0,??athw_tpmiocb_spi_0+8
+   \       0x36   0xE06E             B.N      ??athw_tpmiocb_spi_2
+     40          	X_RET_VAL_IF_FAIL((xfersz != 0), ERRNGATE(ESZEROL));
+   \                     ??athw_tpmiocb_spi_3: (+1)
+   \       0x38   0x4650             MOV      R0,R10
+   \       0x3A   0xB280             UXTH     R0,R0
+   \       0x3C   0x2800             CMP      R0,#+0
+   \       0x3E   0xD106             BNE.N    ??athw_tpmiocb_spi_4
+   \       0x40   0x493A             LDR.N    R1,??athw_tpmiocb_spi_0+16
+   \       0x42   0x4837             LDR.N    R0,??athw_tpmiocb_spi_0+4
+   \       0x44   0x.... 0x....      BL       printf
+   \       0x48   0xF47F 0x70C8      MVNS     R0,#+400
+   \       0x4C   0xE063             B.N      ??athw_tpmiocb_spi_2
+     41          
+     42          	if(ctx == NULL) {
+   \                     ??athw_tpmiocb_spi_4: (+1)
+   \       0x4E   0x2C00             CMP      R4,#+0
+   \       0x50   0xD102             BNE.N    ??athw_tpmiocb_spi_5
+     43          		ret = ERRNGATE(ESNULLP);
+   \       0x52   0x4834             LDR.N    R0,??athw_tpmiocb_spi_0+8
+   \       0x54   0x4680             MOV      R8,R0
+     44          		goto errdone;
+   \       0x56   0xE051             B.N      ??athw_tpmiocb_spi_6
+     45          	}
+     46          
+     47          	__HAL_SPI_ENABLE(ctx);
+   \                     ??athw_tpmiocb_spi_5: (+1)
+   \       0x58   0x6820             LDR      R0,[R4, #+0]
+   \       0x5A   0x6801             LDR      R1,[R0, #+0]
+   \       0x5C   0xF051 0x0140      ORRS     R1,R1,#0x40
+   \       0x60   0x6820             LDR      R0,[R4, #+0]
+   \       0x62   0x6001             STR      R1,[R0, #+0]
+     48          
+     49          
+     50          	// To SPI start, CS goes active low
+     51          	HAL_GPIO_WritePin(TPM_SPI_CS_PORT, TPM_SPI_CS_PIN, GPIO_PIN_RESET);
+   \       0x64   0x2200             MOVS     R2,#+0
+   \       0x66   0x2110             MOVS     R1,#+16
+   \       0x68   0xF05F 0x4090      MOVS     R0,#+1207959552
+   \       0x6C   0x.... 0x....      BL       HAL_GPIO_WritePin
+     52          
+     53          	status = HAL_SPI_TransmitReceive(ctx, txbuf, rxbuf, TPM_TIS_HEADER_SZ, TPM_SPI_TIMEOUT);
+   \       0x70   0x20FA             MOVS     R0,#+250
+   \       0x72   0x9000             STR      R0,[SP, #+0]
+   \       0x74   0x2304             MOVS     R3,#+4
+   \       0x76   0x0032             MOVS     R2,R6
+   \       0x78   0x0029             MOVS     R1,R5
+   \       0x7A   0x0020             MOVS     R0,R4
+   \       0x7C   0x.... 0x....      BL       HAL_SPI_TransmitReceive
+   \       0x80   0x4683             MOV      R11,R0
+     54          	if(status != HAL_OK) {
+   \       0x82   0x4658             MOV      R0,R11
+   \       0x84   0xB2C0             UXTB     R0,R0
+   \       0x86   0x2800             CMP      R0,#+0
+   \       0x88   0xD002             BEQ.N    ??athw_tpmiocb_spi_7
+     55          		ret = ERRNGATE(EIOFAIL);
+   \       0x8A   0x4829             LDR.N    R0,??athw_tpmiocb_spi_0+20
+   \       0x8C   0x4680             MOV      R8,R0
+     56          		goto errdone;
+   \       0x8E   0xE035             B.N      ??athw_tpmiocb_spi_6
+     57          	}
+     58          
+     59          
+     60          	//  check for wait status
+     61          	if((rxbuf[TPM_TIS_HEADER_SZ - 1] && TPM_TIS_READY_MASK) == 0) {
+   \                     ??athw_tpmiocb_spi_7: (+1)
+   \       0x90   0x78F0             LDRB     R0,[R6, #+3]
+   \       0x92   0x2800             CMP      R0,#+0
+   \       0x94   0xD001             BEQ.N    ??athw_tpmiocb_spi_8
+   \       0x96   0x2001             MOVS     R0,#+1
+   \       0x98   0xE000             B.N      ??athw_tpmiocb_spi_9
+   \                     ??athw_tpmiocb_spi_8: (+1)
+   \       0x9A   0x2000             MOVS     R0,#+0
+   \                     ??athw_tpmiocb_spi_9: (+1)
+   \       0x9C   0xB2C0             UXTB     R0,R0
+   \       0x9E   0x2800             CMP      R0,#+0
+   \       0xA0   0xD114             BNE.N    ??athw_tpmiocb_spi_10
+     62          		do {
+     63          			// Check ready
+     64          			status = HAL_SPI_TransmitReceive(ctx, txbuf, rxbuf, 1, TPM_SPI_TIMEOUT);
+   \                     ??athw_tpmiocb_spi_11: (+1)
+   \       0xA2   0x20FA             MOVS     R0,#+250
+   \       0xA4   0x9000             STR      R0,[SP, #+0]
+   \       0xA6   0x2301             MOVS     R3,#+1
+   \       0xA8   0x0032             MOVS     R2,R6
+   \       0xAA   0x0029             MOVS     R1,R5
+   \       0xAC   0x0020             MOVS     R0,R4
+   \       0xAE   0x.... 0x....      BL       HAL_SPI_TransmitReceive
+   \       0xB2   0x4683             MOV      R11,R0
+     65          			if(rxbuf[0] & TPM_TIS_READY_MASK) {
+   \       0xB4   0x7830             LDRB     R0,[R6, #+0]
+   \       0xB6   0x07C0             LSLS     R0,R0,#+31
+   \       0xB8   0xD408             BMI.N    ??athw_tpmiocb_spi_10
+     66          				break;
+     67          			}
+     68          		} while(status == HAL_OK && --timeout > 0);
+   \                     ??athw_tpmiocb_spi_12: (+1)
+   \       0xBA   0x4658             MOV      R0,R11
+   \       0xBC   0xB2C0             UXTB     R0,R0
+   \       0xBE   0x2800             CMP      R0,#+0
+   \       0xC0   0xD104             BNE.N    ??athw_tpmiocb_spi_10
+   \       0xC2   0xF1B9 0x0901      SUBS     R9,R9,#+1
+   \       0xC6   0xF1B9 0x0F01      CMP      R9,#+1
+   \       0xCA   0xDAEA             BGE.N    ??athw_tpmiocb_spi_11
+     69          	}
+     70          #if defined(ATHW_TPM_SPI_DEBUG) || defined(ATHW_DEBUG_ALL)
+     71          	printf(" spi ready wait is %d \r\n", TPM_SPI_WAIT_RETRY - timeout);
+     72          #endif
+     73          
+     74          	if(timeout <= 0) {
+   \                     ??athw_tpmiocb_spi_10: (+1)
+   \       0xCC   0xF1B9 0x0F01      CMP      R9,#+1
+   \       0xD0   0xDA03             BGE.N    ??athw_tpmiocb_spi_13
+     75          		ret = ERRNGATE(EIOTIMEOUT);
+   \       0xD2   0xF47F 0x7048      MVNS     R0,#+800
+   \       0xD6   0x4680             MOV      R8,R0
+     76          		goto errdone;
+   \       0xD8   0xE010             B.N      ??athw_tpmiocb_spi_6
+     77          	}
+     78          
+     79          	// send reminder payload 
+     80          	status = HAL_SPI_TransmitReceive(ctx, 
+     81          									 &txbuf[TPM_TIS_HEADER_SZ], 
+     82          									 &rxbuf[TPM_TIS_HEADER_SZ], 
+     83          									 xfersz - TPM_TIS_HEADER_SZ,
+     84          									 TPM_SPI_TIMEOUT);
+   \                     ??athw_tpmiocb_spi_13: (+1)
+   \       0xDA   0x20FA             MOVS     R0,#+250
+   \       0xDC   0x9000             STR      R0,[SP, #+0]
+   \       0xDE   0xF1BA 0x0304      SUBS     R3,R10,#+4
+   \       0xE2   0xB29B             UXTH     R3,R3
+   \       0xE4   0x1D32             ADDS     R2,R6,#+4
+   \       0xE6   0x1D29             ADDS     R1,R5,#+4
+   \       0xE8   0x0020             MOVS     R0,R4
+   \       0xEA   0x.... 0x....      BL       HAL_SPI_TransmitReceive
+   \       0xEE   0x4683             MOV      R11,R0
+     85          
+     86          
+     87          
+     88          	if(status != HAL_OK) {
+   \       0xF0   0x4658             MOV      R0,R11
+   \       0xF2   0xB2C0             UXTB     R0,R0
+   \       0xF4   0x2800             CMP      R0,#+0
+   \       0xF6   0xD001             BEQ.N    ??athw_tpmiocb_spi_6
+     89          		ret = ERRNGATE(EIOFAIL);
+   \       0xF8   0x480D             LDR.N    R0,??athw_tpmiocb_spi_0+20
+   \       0xFA   0x4680             MOV      R8,R0
+     90          	}
+     91          
+     92          errdone:
+     93          
+     94          #if defined(ATHW_TPM_SPI_DEBUG) || defined(ATHW_DEBUG_ALL)
+     95          	printf("ret code : %d , xfer : %d, status : 0x%x \n", ret, xfersz, status);
+     96          #endif
+     97          
+     98          	// To SPI stop, CS goes active high
+     99          	HAL_GPIO_WritePin(TPM_SPI_CS_PORT, TPM_SPI_CS_PIN, GPIO_PIN_SET);
+   \                     ??athw_tpmiocb_spi_6: (+1)
+   \       0xFC   0x2201             MOVS     R2,#+1
+   \       0xFE   0x2110             MOVS     R1,#+16
+   \      0x100   0xF05F 0x4090      MOVS     R0,#+1207959552
+   \      0x104   0x.... 0x....      BL       HAL_GPIO_WritePin
+    100          	__HAL_SPI_DISABLE(ctx);
+   \      0x108   0x6820             LDR      R0,[R4, #+0]
+   \      0x10A   0x6801             LDR      R1,[R0, #+0]
+   \      0x10C   0xF031 0x0140      BICS     R1,R1,#0x40
+   \      0x110   0x6820             LDR      R0,[R4, #+0]
+   \      0x112   0x6001             STR      R1,[R0, #+0]
+    101          	return ret;
+   \      0x114   0x4640             MOV      R0,R8
+   \                     ??athw_tpmiocb_spi_2: (+1)
+   \      0x116   0xE8BD 0x8FF2      POP      {R1,R4-R11,PC}
+   \      0x11A   0xBF00             Nop
+   \                     ??athw_tpmiocb_spi_0:
+   \      0x11C   0x....'....        DC32     ?_1
+   \      0x120   0x....'....        DC32     ?_0
+   \      0x124   0xFFFF'FE70        DC32     0xfffffe70
+   \      0x128   0x....'....        DC32     ?_2
+   \      0x12C   0x....'....        DC32     ?_3
+   \      0x130   0xFFFF'FCE0        DC32     0xfffffce0
+    102          
+    103          }
+
+   \                                 In section .rodata, align 4
+   \                     ?_0:
+   \        0x0   0x27 0x25          DC8 "'%s' FAILED."
+   \              0x73 0x27    
+   \              0x20 0x46    
+   \              0x41 0x49    
+   \              0x4C 0x45    
+   \              0x44 0x2E    
+   \              0x00
+   \        0xD                      DS8 3
+
+   \                                 In section .rodata, align 4
+   \                     ?_1:
+   \        0x0   0x28 0x74          DC8 "(txbuf != NULL)"
+   \              0x78 0x62    
+   \              0x75 0x66    
+   \              0x20 0x21    
+   \              0x3D 0x20    
+   \              0x4E 0x55    
+   \              0x4C 0x4C    
+   \              0x29 0x00
+
+   \                                 In section .rodata, align 4
+   \                     ?_2:
+   \        0x0   0x28 0x72          DC8 "(rxbuf != NULL)"
+   \              0x78 0x62    
+   \              0x75 0x66    
+   \              0x20 0x21    
+   \              0x3D 0x20    
+   \              0x4E 0x55    
+   \              0x4C 0x4C    
+   \              0x29 0x00
+
+   \                                 In section .rodata, align 4
+   \                     ?_3:
+   \        0x0   0x28 0x78          DC8 "(xfersz != 0)"
+   \              0x66 0x65    
+   \              0x72 0x73    
+   \              0x7A 0x20    
+   \              0x21 0x3D    
+   \              0x20 0x30    
+   \              0x29 0x00
+   \        0xE                      DS8 2
+    104          
+    105          
+    106          
+    107          
+    108          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      40   athw_tpmiocb_spi
+        40   -> HAL_GPIO_WritePin
+        40   -> HAL_SPI_TransmitReceive
+        40   -> printf
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      16  ?_0
+      16  ?_1
+      16  ?_2
+      16  ?_3
+     308  athw_tpmiocb_spi
+
+ 
+  64 bytes in section .rodata
+ 308 bytes in section .text
+ 
+ 308 bytes of CODE  memory
+  64 bytes of CONST memory
+
+Errors: none
+Warnings: none

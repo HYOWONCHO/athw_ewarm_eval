@@ -66,4 +66,8 @@
 #define EFAIL			( 1 )
 #endif
 
+
+#define EIOFAIL			( 800 )		//! I/O interface execution fail
+#define	EIOTIMEOUT		( 801 )		//! I/O interface timeout
+
 #endif /* __ATHW_ERRNO_H__ */

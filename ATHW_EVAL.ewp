@@ -688,7 +688,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>32</hasPrio>
+                <hasPrio>1</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -2206,6 +2206,12 @@
                 <name>ATHW_EVAL</name>
                 <file>
                     <name>$PROJ_DIR$\ATHW_EVAL_BSP\src\athw_eval_it.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\ATHW_EVAL_BSP\src\athw_host_spi.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\ATHW_EVAL_BSP\src\athw_tpm_spi.c</name>
                 </file>
             </group>
             <group>

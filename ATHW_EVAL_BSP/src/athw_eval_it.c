@@ -27,8 +27,11 @@
 #include "athw_errno.h"
 #include "athw_system.h"
 #include "athw_eval_it.h"
+#include "athw_tpmio_types.h"
 
 //#include "stm32l4xx_hal_usart.h"
+
+static DMA_HandleTypeDef h_dmarx;
 
 extern void error_handler(void *priv);
 
@@ -179,6 +182,36 @@ static void athw_eval_uart_init(UART_HandleTypeDef *com)
 
 }
 
+static void athw_eval_hostspi_init(SPI_HandleTypeDef *spi) 
+{
+    //SPI_InitTypeDef 
+    if(spi == NULL) {
+        error_handler(NULL);
+    }
+
+    spi->Instance               = HOST_SPI_BANK;
+    spi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+    spi->Init.Direction         = SPI_DIRECTION_2LINES;
+    spi->Init.CLKPhase          = SPI_PHASE_1EDGE;
+    spi->Init.CLKPolarity       = SPI_POLARITY_LOW;
+    spi->Init.DataSize          = SPI_DATASIZE_8BIT;
+    spi->Init.FirstBit          = SPI_FIRSTBIT_MSB;
+    spi->Init.TIMode            = SPI_TIMODE_DISABLE;
+    spi->Init.CRCCalculation    = SPI_CRCCALCULATION_DISABLE;
+    spi->Init.CRCPolynomial     = 7;
+    spi->Init.CRCLength         = SPI_CRC_LENGTH_8BIT;
+    spi->Init.NSS               = SPI_NSS_SOFT;
+    spi->Init.NSSPMode          = SPI_NSS_PULSE_DISABLE;
+
+    spi->Init.Mode              = SPI_MODE_SLAVE;
+
+    if(HAL_SPI_Init(spi) != HAL_OK) {
+        error_handler(NULL);
+    }
+
+
+}
+
 
 /**
  * @fn HAL_SPI_MspInit - SPI MSP Initialization 
@@ -214,6 +247,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
     else if(hspi->Instance == SPI2) {
         __HAL_RCC_SPI2_CLK_ENABLE();
         __HAL_RCC_GPIOB_CLK_ENABLE();
+        __HAL_RCC_DMA1_CLK_ENABLE();
 
         /**
          * SPI2 GPIO Configuration 
@@ -224,12 +258,29 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
 
         gpio.Pin = GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
         gpio.Mode = GPIO_MODE_AF_PP;
-        gpio.Pull = GPIO_NOPULL; //GPIO_PULLDOWN;
+        gpio.Pull = GPIO_PULLDOWN;
         gpio.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
         gpio.Alternate = GPIO_AF5_SPI2;
 
         HAL_GPIO_Init(GPIOB, &gpio);
 
+        h_dmarx.Instance                    = DMA1_Channel2;
+        h_dmarx.Init.Direction              = DMA_PERIPH_TO_MEMORY;
+        h_dmarx.Init.PeriphInc              = DMA_PINC_DISABLE;
+        h_dmarx.Init.MemInc                 = DMA_MINC_ENABLE;
+        h_dmarx.Init.PeriphDataAlignment    = DMA_PDATAALIGN_BYTE;
+        h_dmarx.Init.MemDataAlignment       = DMA_MDATAALIGN_BYTE;
+        h_dmarx.Init.Mode                   = DMA_NORMAL;
+        h_dmarx.Init.Priority               = DMA_PRIORITY_HIGH;
+
+        HAL_DMA_Init(&h_dmarx);
+
+        // accocate the initialized dma handle to spi handle
+        __HAL_LINKDMA(hspi, hdmarx, h_dmarx);
+
+        // NVIC configuration for DMA transfer complete interrupt
+        HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 1, 0);
+        HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
     }
 
 }
@@ -376,7 +427,8 @@ int athw_eval_it_init(void *priv)
     athw_eval_gpio_init();
     athw_eval_uart_init(hnd->h_debuguart);
 
-    printf("ATHW Evaluation Board Device Init done !!! \r\n");
+    printf("ATHW Evaluation Board (Version : 0x%x) Device Init done !!! \r\n",
+           ATHW_SYSTEM_VERSION);
 
     ret = EOK;
 errdone:

@@ -19,7 +19,7 @@ extern "C" {
 //#define _IFPACKED				(__attribute__((packed)))
 
 #ifndef bool
-typedef uint8_t    bool:1;
+typedef uint8_t    bool;
 #endif
 
 #ifndef true
@@ -49,7 +49,7 @@ typedef uint8_t    bool:1;
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 #endif
 
-#definee BIT(nr)         (1UL << (nr))
+#define BIT(nr)         (1 << (nr))
 
 #define DIV_ROUND_UP(n,d) (((n) + (d) - 1) / (d))
 
@@ -59,15 +59,20 @@ typedef uint8_t    bool:1;
 
 #define MAX_SPI_BYTES              32
 
+//#pragma push(1)
+typedef struct __attribute__((packed)) _io_tlv_t {
+	void *tx;			/*! Transfer buffer pointer*/
+	int txlen;			/*! Length of Transfer */
+	void *rx;			/*! Receive buffer pointer */
+	int *rxlen;			/*! Length of Receive */
+}__attribute__((packed)) io_tlv_t;
 
-typedef  struct _spi_ioctx_t {
-	void *h_ctx;
-	void *h_io;
-	uint8_t *txbuf;
-	uint8_t *rxbuf;
-	uint16_t xfersz;
-	
+typedef  struct __attribute__((packed)) _spi_ioctx_t {
+	void *h_ctx;		/*! Device handle*/
+	void *h_io;			/*! IO device handle (like UART, I2C and SPI) */
+	io_tlv_t ioctx;		/*! Data exchange structure*/
 }spi_ioctx_t;
+//#pragma pop
 
 
 #ifdef __cplusplus

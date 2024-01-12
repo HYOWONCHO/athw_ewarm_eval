@@ -18,7 +18,7 @@ static UART_HandleTypeDef dbguart;
 
 PUTCHAR_PROTOTYPE
 {
-    (void)f;
+    //(void)f;
     // place your implementation of futpc here
     while( HAL_UART_Transmit(&dbguart, (uint8_t *)&ch, 1, 30000) != HAL_OK) {
         ;
@@ -29,7 +29,7 @@ PUTCHAR_PROTOTYPE
 
 GETCHAR_PROTOTYPE
 {
-    (void)f;
+    //(void)f;
     uint8_t ch = 0;
     while( HAL_UART_Receive(&dbguart, (uint8_t *)&ch, 1, 30000) != HAL_OK) {
         ;

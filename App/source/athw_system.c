@@ -24,6 +24,7 @@
 
 #include "main.h"
 #include "stm32l4xx.h"
+#include "configs.h"
 extern void error_handler(void *priv);
 
 
@@ -78,7 +79,7 @@ void athw_system_clock_config(void)
                     | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
     clk.SYSCLKSource = RCC_SYSCLKSOURCE_MSI;
     clk.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    clk.APB1CLKDivider = RCC_HCLK_DIV2;
+    clk.APB1CLKDivider = RCC_HCLK_DIV1;
     clk.APB2CLKDivider = RCC_HCLK_DIV1;
 
     if(HAL_RCC_ClockConfig(&clk, FLASH_LATENCY_0) != HAL_OK) {
@@ -88,4 +89,20 @@ void athw_system_clock_config(void)
     return;
 }
 
+
+//void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim) {
+//
+//    if(htim->Instance == PKT_TIMx) {
+//        // TIM peripheral clock enable
+//        PKT_TIM_CLK_ENABLE;
+//
+//        // Config the NVIC for TIM3
+//        HAL_NVIC_SetPriority(PKT_TIM_IRQn, 3, 0);
+//
+//        // Enable the TIMx Global Interrupt
+//        HAL_NVIC_EnableIRQ(PKT_TIM_IRQn);
+//    }
+//
+//
+//}
 

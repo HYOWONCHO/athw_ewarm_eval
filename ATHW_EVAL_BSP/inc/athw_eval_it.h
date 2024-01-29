@@ -13,8 +13,8 @@ extern "C" {
  */
 typedef struct _athw_it_handle_t {
 	UART_HandleTypeDef	*h_debuguart;		/**< Serial & Debugf UART interface*/
-	SPI_HandleTypeDef 	*h_hostspi;		 	/**< TPM SPI Master interface */
-	SPI_HandleTypeDef 	*h_tpmspi;			/**< Host SPI Slave interface*/
+	//SPI_HandleTypeDef 	*h_hostspi;		 	/**< TPM SPI Master interface */
+	//SPI_HandleTypeDef 	*h_tpmspi;			/**< Host SPI Slave interface*/
 }athw_if_handle_t;
 
 

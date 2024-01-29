@@ -27,6 +27,15 @@ extern "C" {
 #define COM_UART_SPEED		(115200)
 
 
+
+/**
+ * @brief HOST Timer Interrupt 
+ */
+#define PKT_TIMx				TIM7
+#define PKT_TIM_IRQn			TIM7_IRQn
+#define PKT_TIM_CLK_ENABLE		__HAL_RCC_TIM7_CLK_ENABLE()
+
+
 #ifdef __cplusplus
 }
 #endif

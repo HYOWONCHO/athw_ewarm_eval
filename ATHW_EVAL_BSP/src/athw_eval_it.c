@@ -28,6 +28,7 @@
 #include "athw_system.h"
 #include "athw_eval_it.h"
 #include "athw_tpmio_types.h"
+//#include "stm32l4xx_hal_rcc.h"
 
 //#include "stm32l4xx_hal_usart.h"
 
@@ -264,23 +265,23 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
 
         HAL_GPIO_Init(GPIOB, &gpio);
 
-        h_dmarx.Instance                    = DMA1_Channel2;
-        h_dmarx.Init.Direction              = DMA_PERIPH_TO_MEMORY;
-        h_dmarx.Init.PeriphInc              = DMA_PINC_DISABLE;
-        h_dmarx.Init.MemInc                 = DMA_MINC_ENABLE;
-        h_dmarx.Init.PeriphDataAlignment    = DMA_PDATAALIGN_BYTE;
-        h_dmarx.Init.MemDataAlignment       = DMA_MDATAALIGN_BYTE;
-        h_dmarx.Init.Mode                   = DMA_NORMAL;
-        h_dmarx.Init.Priority               = DMA_PRIORITY_HIGH;
-
-        HAL_DMA_Init(&h_dmarx);
-
-        // accocate the initialized dma handle to spi handle
-        __HAL_LINKDMA(hspi, hdmarx, h_dmarx);
-
-        // NVIC configuration for DMA transfer complete interrupt
-        HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 1, 0);
-        HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
+//        h_dmarx.Instance                    = DMA1_Channel2;
+//        h_dmarx.Init.Direction              = DMA_PERIPH_TO_MEMORY;
+//        h_dmarx.Init.PeriphInc              = DMA_PINC_DISABLE;
+//        h_dmarx.Init.MemInc                 = DMA_MINC_ENABLE;
+//        h_dmarx.Init.PeriphDataAlignment    = DMA_PDATAALIGN_BYTE;
+//        h_dmarx.Init.MemDataAlignment       = DMA_MDATAALIGN_BYTE;
+//        h_dmarx.Init.Mode                   = DMA_NORMAL;
+//        h_dmarx.Init.Priority               = DMA_PRIORITY_HIGH;
+//
+//        HAL_DMA_Init(&h_dmarx);
+//
+//        // accocate the initialized dma handle to spi handle
+//        __HAL_LINKDMA(hspi, hdmarx, h_dmarx);
+//
+//        // NVIC configuration for DMA transfer complete interrupt
+//        HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 1, 0);
+//        HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
     }
 
 }
@@ -434,4 +435,5 @@ int athw_eval_it_init(void *priv)
 errdone:
     return ret;
 }
+
 

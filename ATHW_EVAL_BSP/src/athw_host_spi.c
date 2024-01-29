@@ -20,12 +20,31 @@
  * @copyright Copyright 2020 Trustkey. All rights reserved*
  */         
 
+#include "configs.h"
 
-void DMA1_Channel2_IRQHandler(void) 
+
+/**
+ * SPI TX/RX complete IRQ callback 
+ * 
+ * @author rocke (2024-01-26)
+ * 
+ * @param hspi   SPI Handle
+ */
+void HAL_SPI_RxCpltCallBack(SPI_HandleTypeDef *hspi) 
 {
-	HAL_DMA_IRQHandler();
+
 }
 
+/**
+ * @brief SPI error callback
+ * 
+ * @author rocke (2024-01-26)
+ * 
+ * @param hspi    SPI Handle
+ */
+void HAL_SPI_ErrorCallBack(SPI_HandleTypeDef *hspi)
+{
 
+}
 
 

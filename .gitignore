@@ -574,3 +574,5 @@ Debug/List/Utils_15430540244826799469.dir/x_time.s
 Debug/List/ATHW_EVAL_6662199345816623431.dir/athw_tpm_spi.s
 Debug/List/ATHW_EVAL_6662199345816623431.dir/athw_tpm_spi.lst
 Debug/List/ATHW_EVAL_6662199345816623431.dir/athw_tpm_spi.s
+*.lst
+*.s

@@ -83,22 +83,23 @@ void _ttywrch(int ch) {
 #endif
 
 int main(void)
-{ 
+{
+    extern uint32_t SystemCoreClock;
     int ret = 0;
     //UART_HandleTypeDef	debguart;		/**< Serial & Debugf UART interface*/
     SPI_HandleTypeDef 	hostspi;		 	/**< TPM SPI Master interface */
     SPI_HandleTypeDef 	tpmspi;	
     athw_if_handle_t ifhnd = {
         .h_debuguart = &dbguart,
-        .h_hostspi = &hostspi,
-        .h_tpmspi = &tpmspi
+        //.h_hostspi = &hostspi,
+        //.h_tpmspi = &tpmspi
     };
 
 
 
     x_memzero(ifhnd.h_debuguart, sizeof dbguart);
-    x_memzero(ifhnd.h_hostspi, sizeof hostspi);
-    x_memzero(ifhnd.h_tpmspi, sizeof tpmspi);
+   // x_memzero(ifhnd.h_hostspi, sizeof hostspi);
+   // x_memzero(ifhnd.h_tpmspi, sizeof tpmspi);
 
 
     // ATHW Device peripheral and low device setting
@@ -106,6 +107,10 @@ int main(void)
     if( ret != EOK ) {
         error_handler(NULL);
     }
+
+    printf("System Core Clock : %d Hz \r\n", SystemCoreClock);
+
+    athw_pkt_proc_init();
 
     do {
     } while (1);

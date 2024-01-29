@@ -191,6 +191,13 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 1 */
 }
 
+extern SPI_HandleTypeDef *h_hostpsi;
+
+void SPI1_IRQHandler(void)
+{
+  //HAL_SPI_IRQHandler(h_hostpsi);
+}
+
 /******************************************************************************/
 /* STM32L4xx Peripheral Interrupt Handlers                                    */
 /* Add here the Interrupt Handlers for the used peripherals.                  */

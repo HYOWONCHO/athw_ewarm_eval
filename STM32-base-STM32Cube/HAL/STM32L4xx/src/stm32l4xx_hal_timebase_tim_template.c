@@ -160,7 +160,9 @@ void HAL_ResumeTick(void)
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  HAL_IncTick();
+//  if(htim->Instance == TIM6) {
+    HAL_IncTick();
+//  }
 }
 
 /**

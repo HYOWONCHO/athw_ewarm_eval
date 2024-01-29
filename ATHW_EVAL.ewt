@@ -2926,6 +2926,9 @@
             </file>
         </group>
         <file>
+            <name>$PROJ_DIR$\App\source\athw_pkt_process.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\App\source\athw_system.c</name>
         </file>
         <file>

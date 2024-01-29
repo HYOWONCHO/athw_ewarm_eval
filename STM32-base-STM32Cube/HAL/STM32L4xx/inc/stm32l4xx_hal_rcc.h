@@ -1045,6 +1045,7 @@ typedef struct
                                                } while(0)
 
 #if defined(TIM3)
+//#error "xxxxxdx"
 #define __HAL_RCC_TIM3_CLK_ENABLE()            do { \
                                                  __IO uint32_t tmpreg; \
                                                  SET_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM3EN); \

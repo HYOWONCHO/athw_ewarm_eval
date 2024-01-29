@@ -576,3 +576,7 @@ Debug/List/ATHW_EVAL_6662199345816623431.dir/athw_tpm_spi.lst
 Debug/List/ATHW_EVAL_6662199345816623431.dir/athw_tpm_spi.s
 *.lst
 *.s
+athw_vs_globaldef.h
+Debug/List/ATHW_EVAL_6662199345816623431.dir/athw_host_spi.lst
+Debug/List/ATHW_EVAL_6662199345816623431.dir/athw_host_spi.s
+Debug/List/ATHW_EVAL_6662199345816623431.dir/athw_tpm_spi.lst

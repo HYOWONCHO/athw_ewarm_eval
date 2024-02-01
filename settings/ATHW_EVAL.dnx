@@ -40,8 +40,8 @@
         <MultiCoreRunAll>1</MultiCoreRunAll>
     </Simulator>
     <PlDriver>
-        <MemConfigValue />
         <FirstRun>0</FirstRun>
+        <MemConfigValue />
     </PlDriver>
     <ArmDriver>
         <EnableCache>0</EnableCache>
@@ -52,7 +52,7 @@
         <CStepIntDis>_ 0</CStepIntDis>
     </StLinkDriver>
     <DebugChecksum>
-        <Checksum>2242011228</Checksum>
+        <Checksum>4217812443</Checksum>
     </DebugChecksum>
     <Disassembly>
         <MixedMode>0</MixedMode>
@@ -62,8 +62,8 @@
         <ShowArgs>0</ShowArgs>
     </CallStack>
     <Exceptions>
-        <StopOnThrow>_ 0</StopOnThrow>
         <StopOnUncaught>_ 0</StopOnUncaught>
+        <StopOnThrow>_ 0</StopOnThrow>
     </Exceptions>
     <JLinkDriver>
         <LeaveTargetRunning>_ 0</LeaveTargetRunning>

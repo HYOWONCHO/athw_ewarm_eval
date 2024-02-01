@@ -97,13 +97,17 @@ static int _pkt_proc_tim_init(void)
 	+ Period = [(TIM6CLK/1000) - 1]. to have a (1/1000) s time base.
 	+ Prescaler = (uwTimclock/1000000 - 1) to have a 1MHz counter clock.
 	+ ClockDivision = 0
-	+ Counter direction = Up
+	+ Counter direction =
+	+	To get TIM3 counter clock at 10 KHz, the Prescaler is computed as following:
+		Prescaler = (TIM3CLK / TIM3 counter clock) - 1
+		Prescaler = (SystemCoreClock /10 KHz) - 1
+	+ Update rate = TIM3 counter clock / (Period + 1) = 1 Hz,
 	*/
 	TimHandle.Init.Period = 3000 - 1;
 	TimHandle.Init.Prescaler = uwPrescalerValue;
 	TimHandle.Init.ClockDivision = 0;
 	TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
-	 TimHandle.Init.RepetitionCounter = 0;
+	TimHandle.Init.RepetitionCounter = 0;
 	//TimHandle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 	if(HAL_TIM_Base_Init(&TimHandle) == HAL_OK) {
 		/* Start the TIM time Base generation in interrupt mode */

@@ -29,24 +29,6 @@ static TIM_HandleTypeDef TimHandle;
 #define ATHW_PKT_ROCESS_TIM_COUNT_CLK				1000000U  /*! 1MHz */
 
 
-
-
-//void TIM7_IRQHandler(void)
-//{
-//	//HAL_TIM_IRQHandler(&h_host_tm);
-//	//__HAL_TIM_DISABLE_IT(&h_host_tm, TIM_IT_UPDATE);
-//
-//	if(__HAL_TIM_GET_FLAG(&h_host_tm, TIM_FLAG_UPDATE) != RESET) {
-//		if(__HAL_TIM_GET_IT_SOURCE(&h_host_tm, TIM_IT_UPDATE) != RESET) {
-//			__HAL_TIM_CLEAR_IT(&h_host_tm, TIM_IT_UPDATE);
-//			printf("TIM7 IRQ !!! \r\n");
-//		}
-//	}
-//
-//
-//	//__HAL_TIM_ENABLE_IT(&h_host_tm, TIM_IT_UPDATE);
-//}
-
 static void _pkt_proc_suspend_tick(void) 
 {
 	__HAL_TIM_DISABLE_IT(&TimHandle, TIM_IT_UPDATE); 
@@ -88,7 +70,7 @@ static int _pkt_proc_tim_init(void)
 
 	/* Compute the prescaler value to have TIM6 counter clock equal to 1MHz */
 	//uwPrescalerValue = (uint32_t)((uwTimclock / 1000000U)- 1U);
-	uwPrescalerValue = (uint32_t)((SystemCoreClock  / 1000) - 1U);   // 1000HZ
+	uwPrescalerValue = (uint32_t)((uwTimclock  / 1000) - 1U);   // 1000HZ
 
 	/* Initialize TIM6 */
 	TimHandle.Instance = TIM3;
@@ -115,7 +97,7 @@ static int _pkt_proc_tim_init(void)
 	}
 
 	/* Return function status */
-	return HAL_ERROR; 
+	return -1; 
 #else
 	int ret = EOK;
 

@@ -111,7 +111,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   + ClockDivision = 0
   + Counter direction = Up
   */
-  TimHandle.Init.Period = (1000000U / 1000U) - 1U;
+  TimHandle.Init.Period = 1000000U - 1;//(1000000U / 1000U) - 1U;
   TimHandle.Init.Prescaler = uwPrescalerValue;
   TimHandle.Init.ClockDivision = 0;
   TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;

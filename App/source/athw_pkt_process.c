@@ -88,7 +88,7 @@ static int _pkt_proc_tim_init(void)
 
 	/* Compute the prescaler value to have TIM6 counter clock equal to 1MHz */
 	//uwPrescalerValue = (uint32_t)((uwTimclock / 1000000U)- 1U);
-	uwPrescalerValue = (uint32_t)((SystemCoreClock  / 1000) - 1U);   // 1HZ
+	uwPrescalerValue = (uint32_t)((SystemCoreClock  / 1000) - 1U);   // 1000HZ
 
 	/* Initialize TIM6 */
 	TimHandle.Instance = TIM3;
@@ -99,7 +99,7 @@ static int _pkt_proc_tim_init(void)
 	+ ClockDivision = 0
 	+ Counter direction = Up
 	*/
-	TimHandle.Init.Period = 1000 - 1;
+	TimHandle.Init.Period = 3000 - 1;
 	TimHandle.Init.Prescaler = uwPrescalerValue;
 	TimHandle.Init.ClockDivision = 0;
 	TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;

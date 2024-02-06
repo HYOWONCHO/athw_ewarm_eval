@@ -21,6 +21,12 @@
  */         
 
 #include "configs.h"
+#include "athw_eval_it.h"
+#include "athw_it_types.h"
+extern spi_ioctx_t host_spictx; 
+
+extern void _pkt_proc_suspend_tick(void);
+extern int athw_pkt_incoming(void *priv);
 
 
 /**
@@ -32,6 +38,15 @@
  */
 void HAL_SPI_RxCpltCallBack(SPI_HandleTypeDef *hspi) 
 {
+	_pkt_proc_suspend_tick();
+	host_spictx.state = ATHW_IFCB_PROCEDURE_TYPE_RX;
+	athw_pkt_incoming(NULL);
+}
+
+void HAL_SPI_TxRxCpltCallBack(SPI_HandleTypeDef *hspi) 
+{
+
+	athw_pkt_incoming(NULL);
 
 }
 
@@ -47,4 +62,21 @@ void HAL_SPI_ErrorCallBack(SPI_HandleTypeDef *hspi)
 
 }
 
+/**
+ * @fn SPI2_IRQHandler - Handles HOST SPI interrupt request
+ * 
+ * @author rocke (2024-02-02)
+ * 
+ * @param  None
+ * @retval None
+ */
+void SPI2_IRQHandler(void) 
+{
+
+	SPI_HandleTypeDef *hnd;
+	hnd = (SPI_HandleTypeDef *)athw_eval_get_handle(ATHW_HNDTYPE_HOST);
+	HAL_SPI_IRQHandler(hnd);
+	//
+
+}
 

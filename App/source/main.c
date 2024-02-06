@@ -91,14 +91,14 @@ int main(void)
     SPI_HandleTypeDef 	tpmspi;	
     athw_if_handle_t ifhnd = {
         .h_debuguart = &dbguart,
-        //.h_hostspi = &hostspi,
+        .h_hostspi = &hostspi,
         //.h_tpmspi = &tpmspi
     };
 
 
 
     x_memzero(ifhnd.h_debuguart, sizeof dbguart);
-   // x_memzero(ifhnd.h_hostspi, sizeof hostspi);
+    x_memzero(ifhnd.h_hostspi, sizeof hostspi);
    // x_memzero(ifhnd.h_tpmspi, sizeof tpmspi);
 
 

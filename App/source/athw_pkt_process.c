@@ -22,6 +22,9 @@
 
 #include "main.h"
 #include "configs.h"
+#include "athw_it_types.h"
+
+spi_ioctx_t host_spictx;
 
 static TIM_HandleTypeDef TimHandle;
 
@@ -29,18 +32,19 @@ static TIM_HandleTypeDef TimHandle;
 #define ATHW_PKT_ROCESS_TIM_COUNT_CLK				1000000U  /*! 1MHz */
 
 
-static void _pkt_proc_suspend_tick(void) 
+void _pkt_proc_suspend_tick(void) 
 {
 	__HAL_TIM_DISABLE_IT(&TimHandle, TIM_IT_UPDATE); 
 }
 
-static void _pkt_proc_resume_tick(void) {
+void _pkt_proc_resume_tick(void) 
+{
 	__HAL_TIM_ENABLE_IT(&TimHandle, TIM_IT_UPDATE);
 }
 
 static int _pkt_proc_tim_init(void) 
 {
-#if 1
+
 	RCC_ClkInitTypeDef    clkconfig;
 	uint32_t              uwTimclock, uwAPB1Prescaler = 0U;
 	uint32_t              uwPrescalerValue = 0U;
@@ -96,70 +100,12 @@ static int _pkt_proc_tim_init(void)
 		return HAL_TIM_Base_Start_IT(&TimHandle);
 	}
 
+	// Timer update interrupt disable
+	_pkt_proc_suspend_tick();
+
 	/* Return function status */
 	return -1; 
-#else
-	int ret = EOK;
 
-	RCC_ClkInitTypeDef	clkconfig;
-
-	uint32_t pf_latency;
-	uint32_t apbclkpres;
-	uint32_t timeclock;
-	uint32_t prscval; 
-
-	HAL_NVIC_EnableIRQ(PKT_TIM_IRQn); 
-
-	// Enable TIM clock
-	PKT_TIM_CLK_ENABLE;
-    
-    
-	HAL_RCC_GetClockConfig(&clkconfig, &pf_latency);
-	apbclkpres = clkconfig.APB1CLKDivider;
-	printf("APB1 Clock Divider value : %d \r\n", apbclkpres);
-
-	if(apbclkpres == RCC_HCLK_DIV1) {
-		timeclock = HAL_RCC_GetPCLK1Freq();
-	} else {
-		timeclock = 2U * HAL_RCC_GetPCLK1Freq();
-	}
-
-
-	prscval = (uint32_t)((timeclock / ATHW_PKT_ROCESS_TIM_COUNT_CLK) - 1U);
-
-	printf("TIM7 clock : %d  and Prescaler value : %d \r\n", timeclock, prscval);
-	/*
-	   Initialize TIMx peripheral as follows:
-		+ Period = [(TIMx LK/1000) - 1]. to have a (1/1000)s (1ms) time base.
-		+ Prescaler = (uwTimclock/1000000 - 1) to have a 1MHz counter clock.
-		+ ClockDivision = 0
-		+ Counter direction = Up
-	*/
-	h_host_tm.Instance 						= PKT_TIMx;
-
-	h_host_tm.Init.Period					= 1000000U - 1;//(ATHW_PKT_ROCESS_TIM_COUNT_CLK / 1000)-1U; // ATHW_PKT_ROCESS_TIM_COUNT_CLK - 1;
-	h_host_tm.Init.Prescaler				= prscval;
-	h_host_tm.Init.ClockDivision 			= 0;
-	h_host_tm.Init.CounterMode 				= TIM_COUNTERMODE_UP;
-	//h_host_tm.Init.RepetitionCounter 		= 0;
-	h_host_tm.Init.AutoReloadPreload 		= TIM_AUTORELOAD_PRELOAD_DISABLE;
-
-	if(HAL_TIM_Base_Init(&h_host_tm) != HAL_OK) {
-		ret = ERRNGATE(EIOFAIL);
-		goto errdone;
-	}
-
-	if(HAL_TIM_Base_Start_IT(&h_host_tm) != HAL_OK) {
-		ret = ERRNGATE(EIOFAIL);
-		goto errdone;
-	}
-
-	
-	
-errdone:
-
-	return ret;
-#endif
 }
 
 /**
@@ -172,7 +118,10 @@ errdone:
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) 
 {
-	printf("TIM7 IRQ !!! \r\n"); 
+	//printf("TIM7 IRQ !!! \r\n"); 
+
+	// Wake up the packet processing module
+	_x_print_bin("Incoming", host_spictx.iobuf.rx, host_spictx.iobuf.rxlen);
 }
 
 /**
@@ -195,9 +144,20 @@ void TIM3_IRQHandler(void) {
  * @return int On success, return the EOK, on error, return the
  *  	   nv.
  */
-int athw_pkt_proc_init(void) 
+int athw_pkt_proc_init(void *priv) 
 {
 	int ret = EOK;
+
+	x_memzero((void *)&host_spictx, sizeof host_spictx);
+
+	host_spictx.h_ctx = NULL;
+	host_spictx.h_io = (void *)(((athw_if_handle_t *)priv)->h_hostspi);
+	host_spictx.iobuf.tx = calloc(1024, 1);
+	host_spictx.iobuf.rx = calloc(1024, 1);
+	host_spictx.iobuf.rxlen = 0;
+	host_spictx.iobuf.txlen = 0;
+	host_spictx.state = 0;
+
 
 	// Compute the prescaler value
 	 // = (uint32_t)((SystemCoreClock / ATHW_PKT_ROCESS_TIM_COUNT_CLK) - 1);
@@ -208,11 +168,12 @@ int athw_pkt_proc_init(void)
 		_pkt_proc_tim_init();
 	}
 
-	
-
-
-
-
+	if(HAL_SPI_Receive_IT((SPI_HandleTypeDef *)host_spictx.h_io,
+						  host_spictx.iobuf.rx,
+						  1) != HAL_OK) {
+		ret = ERRNGATE(EFAIL);
+		goto errdone;
+	}
 
 
 errdone:
@@ -224,5 +185,41 @@ errdone:
 void* athw_pkt_proc_tim_handle(void *priv) 
 {
 	return (void *)&TimHandle;
+}
+
+/**
+ * @fn athw_pkt_incoming
+ * 
+ * @author rocke (2024-02-06)
+ * 
+ * @param priv   
+ * 
+ * @return int 
+ */
+int athw_pkt_incoming(void *priv) 
+{
+	UNUSED(priv); // Not yet used 
+
+	int ret = EOK;
+	//__HAL_LOCK()
+	switch(host_spictx.state) {
+	case ATHW_IFCB_PROCEDURE_TYPE_RX:
+		host_spictx.iobuf.rxlen += 1;
+		break;
+	case ATHW_IFCB_PROCEDURE_TYPE_TX:
+		host_spictx.iobuf.txlen += 1; 
+		break;
+	case ATHW_IFCB_PROCEDURE_TYPE_RXTX:
+		host_spictx.iobuf.txlen += 1; 
+		host_spictx.iobuf.rxlen += 1; 
+		break;
+	default:
+		goto errdone;
+	}
+	
+errdone:
+	_pkt_proc_resume_tick(); 
+	
+	return ret;
 }
 

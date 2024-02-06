@@ -4,6 +4,13 @@
 #include <errno.h>
 
 
+//#ifdef __CNUC__
+//#define UNUSED(x)			UNUSED_##x __attribute((unused))
+//#else
+//#define UNUSED(x)			(void)(x)
+//#endif
+
+
 #define ERRNGATE(x)		( -(x) )	/*! Negative */
 #define ERRPGATE(x)		(x)			/*! Positive */
 

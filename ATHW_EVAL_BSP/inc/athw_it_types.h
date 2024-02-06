@@ -59,21 +59,25 @@ typedef uint8_t    bool;
 
 #define MAX_SPI_BYTES              32
 
-#pragma pack(1)
-typedef struct  _io_tlv_t {
-	void *tx;			/*! Transfer buffer pointer*/
-	int txlen;			/*! Length of Transfer */
-	void *rx;			/*! Receive buffer pointer */
-	int *rxlen;			/*! Length of Receive */
-}io_tlv_t;
 
-typedef  struct  _spi_ioctx_t {
-	void *h_ctx;		/*! Device handle*/
-	void *h_io;			/*! IO device handle (like UART, I2C and SPI) */
-	io_tlv_t ioctx;		/*! Data exchange structure*/
-}spi_ioctx_t;
-#pragma pack()
 
+/**
+ * @brief Interface Handle access index
+ */
+typedef enum _e_if_hndtype {
+	ATHW_HNDTYPE_HOST 			= 0,
+	ATHW_HNDTYPE_TPM,
+	ATHW_HNDTYPE_DBG,
+	ATHW_HDNTYPE_UNKNOWN
+}if_hdntype_e;
+
+
+/**
+ * @brief Interface callback calling procedure type
+ */
+#define ATHW_IFCB_PROCEDURE_TYPE_RX			(0x0101)
+#define ATHW_IFCB_PROCEDURE_TYPE_TX 		(0x0102)
+#define ATHW_IFCB_PROCEDURE_TYPE_RXTX 		(0x0103)
 
 #ifdef __cplusplus
 }

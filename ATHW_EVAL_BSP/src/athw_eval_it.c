@@ -28,6 +28,7 @@
 #include "athw_system.h"
 #include "athw_eval_it.h"
 #include "athw_tpmio_types.h"
+#include "athw_it_types.h"
 //#include "stm32l4xx_hal_rcc.h"
 
 //#include "stm32l4xx_hal_usart.h"
@@ -35,6 +36,8 @@
 static DMA_HandleTypeDef h_dmarx;
 
 extern void error_handler(void *priv);
+
+static athw_if_handle_t *if_hnd; // Interface Handle
 
 
 /**
@@ -209,8 +212,6 @@ static void athw_eval_hostspi_init(SPI_HandleTypeDef *spi)
     if(HAL_SPI_Init(spi) != HAL_OK) {
         error_handler(NULL);
     }
-
-
 }
 
 
@@ -408,7 +409,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
  */
 int athw_eval_it_init(void *priv)
 {
-    athw_if_handle_t *hnd = NULL;
+    //athw_if_handle_t *hnd = NULL;
     int ret = ERRNGATE(EFAIL);
 
     if(priv == NULL) {
@@ -416,7 +417,8 @@ int athw_eval_it_init(void *priv)
         goto errdone;
     }
 
-    hnd = (athw_if_handle_t *)priv;
+    if_hnd = (athw_if_handle_t *)priv;
+   
 
     // Reset of all perpheral
     athw_system_hal_init();
@@ -426,7 +428,8 @@ int athw_eval_it_init(void *priv)
 
 
     athw_eval_gpio_init();
-    athw_eval_uart_init(hnd->h_debuguart);
+    athw_eval_uart_init(if_hnd->h_debuguart);
+    athw_eval_hostspi_init(if_hnd->h_hostspi);
 
     printf("ATHW Evaluation Board (Version : 0x%x) Device Init done !!! \r\n",
            ATHW_SYSTEM_VERSION);
@@ -434,6 +437,38 @@ int athw_eval_it_init(void *priv)
     ret = EOK;
 errdone:
     return ret;
+}
+
+/**
+ * @fn athw_eval_get_handle - Get the handle pointer address for 
+ *     each interface handle type.
+ * 
+ * @author rocke (2024-02-02)
+ * 
+ * @param[in] hndtype   Specified the handle type 
+ * 
+ * @return Return the peripheral address that use in ATHW board 
+ *         interface
+ */
+void* athw_eval_get_handle(int hndtype) 
+{
+    void **ret = NULL;
+    switch(hndtype) {
+    case ATHW_HNDTYPE_HOST:
+        ret = (void **)&if_hnd->h_hostspi;
+        break;
+    case ATHW_HNDTYPE_TPM:
+        ret = (void **)&if_hnd->h_tpmspi;
+        break;
+    case ATHW_HNDTYPE_DBG:
+        ret = (void **)&if_hnd->h_debuguart;
+        break;
+    default:
+        printf("Unknown I/F Handle Type !!! \r\n");
+        break;
+    }
+
+    return *ret;
 }
 
 

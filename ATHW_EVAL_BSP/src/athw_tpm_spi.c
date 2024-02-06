@@ -23,6 +23,7 @@
 #include "athw_tpmio_types.h"
 #include "athw_it_types.h"
 #include "x_common.h"
+#include "athw_eval_it.h"
 
 int athw_tpmiocb_spi(void *handle) 
 {
@@ -31,9 +32,9 @@ int athw_tpmiocb_spi(void *handle)
 	HAL_StatusTypeDef status;
 	int timeout = TPM_SPI_WAIT_RETRY;
 	
-	uint8_t *txbuf = (uint8_t *)(((spi_ioctx_t *)handle)->ioctx.tx);
-	uint8_t *rxbuf = (uint8_t *)(((spi_ioctx_t *)handle)->ioctx.tx); 
-	uint16_t xfersz = (uint16_t)(((spi_ioctx_t *)handle)->ioctx.txlen);
+	uint8_t *txbuf = (uint8_t *)(((spi_ioctx_t *)handle)->iobuf.tx);
+	uint8_t *rxbuf = (uint8_t *)(((spi_ioctx_t *)handle)->iobuf.tx); 
+	uint16_t xfersz = (uint16_t)(((spi_ioctx_t *)handle)->iobuf.txlen);
 
 	X_RET_VAL_IF_FAIL((txbuf != NULL), ERRNGATE(ESNULLP));
 	X_RET_VAL_IF_FAIL((rxbuf != NULL), ERRNGATE(ESNULLP)); 

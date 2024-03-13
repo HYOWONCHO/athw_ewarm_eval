@@ -2,11 +2,11 @@
 
 "C:\Program Files\IAR Systems\Embedded Workbench 9.2\arm\bin\armJLINK.dll" 
 
-"C:\workspace\ATHW_ETRI\athw_ewarm_eval\Debug\Exe\ATHW_EVAL.out" 
+"E:\Projects\HYOWONCHO_github\ATHW\Target\athw_ewarm_eval\Debug\Exe\ATHW_EVAL.out" 
 
 --plugin="C:\Program Files\IAR Systems\Embedded Workbench 9.2\arm\bin\armLibSupportUniversal.dll" 
 
---flash_loader="C:\workspace\ATHW_ETRI\athw_ewarm_eval\ATHW_EVAL.board" 
+--flash_loader="E:\Projects\HYOWONCHO_github\ATHW\Target\athw_ewarm_eval\ATHW_EVAL.board" 
 
 
 

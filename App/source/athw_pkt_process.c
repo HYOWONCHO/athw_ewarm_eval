@@ -25,6 +25,11 @@
 #include "athw_it_types.h"
 
 spi_ioctx_t host_spictx;
+uint8_t spi_rx_end;
+int rxcnt; 
+uint8_t rxbuf[64];
+uint8_t is_timbegin;
+
 
 static TIM_HandleTypeDef TimHandle;
 
@@ -32,14 +37,26 @@ static TIM_HandleTypeDef TimHandle;
 #define ATHW_PKT_ROCESS_TIM_COUNT_CLK				1000000U  /*! 1MHz */
 
 
+//static uint32_t gn_stoptick;
+
 void _pkt_proc_suspend_tick(void) 
 {
-	__HAL_TIM_DISABLE_IT(&TimHandle, TIM_IT_UPDATE); 
+	//__HAL_TIM_DISABLE_IT(&TimHandle, TIM_IT_UPDATE); 
+	//__HAL_TIM_DISABLE(&TimHandle);
+
+	HAL_TIM_Base_Stop_IT(&TimHandle);
+	
+	
+
 }
 
 void _pkt_proc_resume_tick(void) 
 {
-	__HAL_TIM_ENABLE_IT(&TimHandle, TIM_IT_UPDATE);
+	//__HAL_TIM_ENABLE_IT(&TimHandle, TIM_IT_UPDATE);
+	//__HAL_TIM_ENABLE(&TimHandle);
+
+	HAL_TIM_Base_Start_IT(&TimHandle);
+	
 }
 
 static int _pkt_proc_tim_init(void) 
@@ -89,24 +106,31 @@ static int _pkt_proc_tim_init(void)
 		Prescaler = (SystemCoreClock /10 KHz) - 1
 	+ Update rate = TIM3 counter clock / (Period + 1) = 1 Hz,
 	*/
-	TimHandle.Init.Period = 3000 - 1;
+	TimHandle.Init.Period = 3000 - 1; // 3sec
 	TimHandle.Init.Prescaler = uwPrescalerValue;
 	TimHandle.Init.ClockDivision = 0;
 	TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
 	TimHandle.Init.RepetitionCounter = 0;
 	//TimHandle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-	if(HAL_TIM_Base_Init(&TimHandle) == HAL_OK) {
+	if(HAL_TIM_Base_Init(&TimHandle) != HAL_OK) {
 		/* Start the TIM time Base generation in interrupt mode */
-		return HAL_TIM_Base_Start_IT(&TimHandle);
+		return -1;
 	}
 
+	rxcnt = 0;
+	spi_rx_end = 0;
+	is_timbegin = 0;
+	//HAL_TIM_Base_Start_IT(&TimHandle);
+
 	// Timer update interrupt disable
-	_pkt_proc_suspend_tick();
+	//_pkt_proc_suspend_tick();
 
 	/* Return function status */
 	return -1; 
 
 }
+
+static int timer_began = 0;
 
 /**
   * @brief  Period elapsed callback in non blocking mode
@@ -118,10 +142,25 @@ static int _pkt_proc_tim_init(void)
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) 
 {
-	//printf("TIM7 IRQ !!! \r\n"); 
 
-	// Wake up the packet processing module
-	_x_print_bin("Incoming", host_spictx.iobuf.rx, host_spictx.iobuf.rxlen);
+	//printf("TIM7 IRQ !!! \r\n"); 
+	//spi_rx_end = 1;
+
+	if(timer_began != 0) {
+		HAL_TIM_Base_Stop_IT(htim);
+
+		
+
+		// Wake up the packet processing module
+	//	if(rxcnt > 4) {
+		_x_print_bin("Incoming", rxbuf, rxcnt);
+		rxcnt = 0;
+		is_timbegin = 0;
+	}
+	else {
+		timer_began = 1;
+	}
+//	}
 }
 
 /**
@@ -152,11 +191,18 @@ int athw_pkt_proc_init(void *priv)
 
 	host_spictx.h_ctx = NULL;
 	host_spictx.h_io = (void *)(((athw_if_handle_t *)priv)->h_hostspi);
-	host_spictx.iobuf.tx = calloc(1024, 1);
-	host_spictx.iobuf.rx = calloc(1024, 1);
+	host_spictx.iobuf.tx = calloc(64, 1);
+	host_spictx.iobuf.rx = calloc(64, 1);
 	host_spictx.iobuf.rxlen = 0;
 	host_spictx.iobuf.txlen = 0;
 	host_spictx.state = 0;
+
+	if(host_spictx.iobuf.tx == NULL || host_spictx.iobuf.rx == NULL) {
+		printf("iobuf gen fail tx: %p, rx : %p \r\n",
+			   host_spictx.iobuf.tx, host_spictx.iobuf.rx);
+		ret  = ERRNGATE(ESNULLP);
+		goto errdone;
+	}
 
 
 	// Compute the prescaler value
@@ -168,12 +214,12 @@ int athw_pkt_proc_init(void *priv)
 		_pkt_proc_tim_init();
 	}
 
-	if(HAL_SPI_Receive_IT((SPI_HandleTypeDef *)host_spictx.h_io,
-						  host_spictx.iobuf.rx,
-						  1) != HAL_OK) {
-		ret = ERRNGATE(EFAIL);
-		goto errdone;
-	}
+//	if((ret = HAL_SPI_Receive_IT((SPI_HandleTypeDef *)host_spictx.h_io,
+//						  host_spictx.iobuf.rx,
+//						  1)) != HAL_OK) {
+//		ret = ERRNGATE(EFAIL);
+//		goto errdone;
+//	}
 
 
 errdone:

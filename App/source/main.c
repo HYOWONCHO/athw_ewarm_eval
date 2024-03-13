@@ -82,8 +82,18 @@ void _ttywrch(int ch) {
 }
 #endif
 
+extern void _pkt_proc_suspend_tick(void);
+extern void _pkt_proc_resume_tick(void);
+extern uint8_t spi_rx_end;
+extern int rxcnt; 
+extern uint8_t rxbuf[64];
+extern uint8_t is_timbegin;
+static uint32_t gn_starttick; 
+
+
 int main(void)
 {
+    extern int athw_pkt_proc_init(void *priv);
     extern uint32_t SystemCoreClock;
     int ret = 0;
     //UART_HandleTypeDef	debguart;		/**< Serial & Debugf UART interface*/
@@ -95,6 +105,9 @@ int main(void)
         //.h_tpmspi = &tpmspi
     };
 
+    
+    
+    uint8_t rxdata = 0;
 
 
     x_memzero(ifhnd.h_debuguart, sizeof dbguart);
@@ -110,9 +123,57 @@ int main(void)
 
     printf("System Core Clock : %d Hz \r\n", SystemCoreClock);
 
-    athw_pkt_proc_init();
+    ret = athw_pkt_proc_init((void *)&ifhnd);
+    if( ret != EOK ) {
+        printf("Packet proc initialization fail !!! \r\n");
+        error_handler(NULL);
+    }
 
     do {
+
+        ret = HAL_SPI_Receive(ifhnd.h_hostspi, &rxdata, 1, 0xFFFFFFFF);
+        switch( ret ) {
+        case HAL_OK:
+            //printf("0x%x ", rxbuf[0]);
+            rxbuf[rxcnt++] = rxdata;
+            //if( !is_timbegin  ) {
+            _pkt_proc_resume_tick();
+                //gn_starttick = HAL_GetTick();
+                //is_timbegin = 1;
+            //}
+
+            //rxcnt++;
+//
+//          if( spi_rx_end == 1 ) {
+//             //_pkt_proc_suspend_tick();
+//              spi_rx_end = 0;
+//              is_timbegin = 0;
+//              _pkt_proc_suspend_tick();
+//              //printf("Tim Tick Period : %d sec \r\n", (HAL_GetTick() - gn_starttick) / 1000);
+//              x_mem_print_bin("incoming", rxbuf, rxcnt);
+//
+//              rxcnt = 0;
+//          }
+
+            //printf("rx : 0x%x \r\n", rxbuf[0]);
+            //x_mem_print_bin("incoming", rxbuf, 12);
+            break; 
+        case HAL_ERROR:
+            printf("SPI RX HAL ERROR \r\n");
+            //x_mem_print_bin("error", rxbuf, 12);;
+            break; 
+        case HAL_BUSY:
+            printf("SPI BUSY \r\n");
+            break; 
+        case HAL_TIMEOUT:\
+            printf("SPI Timeout \r\n");
+            break;
+        default:
+            printf("Unknown Error : %d \r\n", ret);
+            break;
+        }
+
+
     } while (1);
 
     //return 0;      

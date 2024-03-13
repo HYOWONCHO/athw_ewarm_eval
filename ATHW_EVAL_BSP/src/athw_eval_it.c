@@ -194,7 +194,7 @@ static void athw_eval_hostspi_init(SPI_HandleTypeDef *spi)
     }
 
     spi->Instance               = HOST_SPI_BANK;
-    spi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+    spi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32; //SPI_BAUDRATEPRESCALER_32;
     spi->Init.Direction         = SPI_DIRECTION_2LINES;
     spi->Init.CLKPhase          = SPI_PHASE_1EDGE;
     spi->Init.CLKPolarity       = SPI_POLARITY_LOW;

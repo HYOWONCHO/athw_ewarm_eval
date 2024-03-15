@@ -17,8 +17,23 @@ extern "C" {
 									|(ATHW_SYSTEM_VERSION_RC))
 
 
-#define TPM_SPI_PORT		SPI1
-#define TPM_SPI_MODE		SPI_MODE_MASTER
+/**
+ * @addtogroup TPM_I/F
+ * Additional TPM Master interfcae
+ * @{
+ */
+#define _ATHW_STM32_TPM_				
+#define ATHW_TPM_DEBUG					1
+
+#define ATHW_TPM_SPI_PORT				SPI1
+#define ATHW_TPM_SPI_MODE				SPI_MODE_MASTER
+#define ATHW_TPM_SPI_CS_PORT 			GPIOA
+#define ATHW_TPM_SPI_CS_PIN				PA4
+
+#define ATHW_TPM_SPI_WAIT_RETRY 		50
+#define ATHW_TPM_SPI_TMO 				250					/*! TPM SPI timeout*/
+#define ATHW_TPM_SPI_FRAME_SZ			64
+/** }   */
 
 #define HOST_SPI_PORT		SPI2
 #define HOST_SPI_MODE		SPI_MODE_SLAVE

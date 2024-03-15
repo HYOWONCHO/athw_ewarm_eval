@@ -120,7 +120,7 @@ static int _pkt_proc_tim_init(void)
 	rxcnt = 0;
 	spi_rx_end = 0;
 	is_timbegin = 0;
-	//HAL_TIM_Base_Start_IT(&TimHandle);
+	HAL_TIM_Base_Start_IT(&TimHandle);
 
 	// Timer update interrupt disable
 	//_pkt_proc_suspend_tick();
@@ -146,20 +146,21 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	//printf("TIM7 IRQ !!! \r\n"); 
 	//spi_rx_end = 1;
 
-	if(timer_began != 0) {
+	//if(timer_began != 0) {
 		HAL_TIM_Base_Stop_IT(htim);
 
-		
+		if(rxcnt > 0) {
 
-		// Wake up the packet processing module
-	//	if(rxcnt > 4) {
-		_x_print_bin("Incoming", rxbuf, rxcnt);
-		rxcnt = 0;
-		is_timbegin = 0;
-	}
-	else {
-		timer_began = 1;
-	}
+			// Wake up the packet processing module
+		//	if(rxcnt > 4) {
+			_x_print_bin("Incoming", rxbuf, rxcnt);
+			rxcnt = 0;
+			is_timbegin = 0;
+		}
+//	}
+//	else {
+//		timer_began = 1;
+//	}
 //	}
 }
 

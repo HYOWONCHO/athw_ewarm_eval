@@ -40,12 +40,12 @@
         <MultiCoreRunAll>1</MultiCoreRunAll>
     </Simulator>
     <PlDriver>
-        <MemConfigValue />
         <FirstRun>0</FirstRun>
+        <MemConfigValue />
     </PlDriver>
     <ArmDriver>
-        <EnforceMemoryConfiguration>1</EnforceMemoryConfiguration>
         <EnableCache>0</EnableCache>
+        <EnforceMemoryConfiguration>1</EnforceMemoryConfiguration>
     </ArmDriver>
     <StLinkDriver>
         <LeaveTargetRunning>_ 0</LeaveTargetRunning>
@@ -62,8 +62,8 @@
         <ShowArgs>0</ShowArgs>
     </CallStack>
     <Exceptions>
-        <StopOnThrow>_ 0</StopOnThrow>
         <StopOnUncaught>_ 0</StopOnUncaught>
+        <StopOnThrow>_ 0</StopOnThrow>
     </Exceptions>
     <JLinkDriver>
         <LeaveTargetRunning>_ 0</LeaveTargetRunning>

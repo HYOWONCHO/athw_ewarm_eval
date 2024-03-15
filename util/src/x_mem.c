@@ -322,7 +322,7 @@ void *x_memcreate(size_t size)
         retbuf = buffer;
     }
 
-
+    x_memzero(retbuf, size);
     return retbuf;
 }
 

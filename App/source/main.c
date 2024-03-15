@@ -130,7 +130,7 @@ int main(void)
     }
 
     do {
-
+#if 1
         ret = HAL_SPI_Receive(ifhnd.h_hostspi, &rxdata, 1, 0xFFFFFFFF);
         switch( ret ) {
         case HAL_OK:
@@ -173,7 +173,7 @@ int main(void)
             break;
         }
 
-
+#endif
     } while (1);
 
     //return 0;      

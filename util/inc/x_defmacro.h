@@ -22,6 +22,8 @@ extern "C" {}
 #define X_RET_VAL_IF_FAIL(expr, val)               \
 	do { if(!(expr)) {printf("'%s' FAILED.", #expr); return(val);} } while (0)
 
+#define X_ASSERT_PARAM(expr,val) ((expr) ? (void)0U : printf("assert param (%s:%d) \r\n",__FILE__, __LINE__)); return (val)
+
 
 ///**<! X_RET_VALIDATE_ERRCODE set errno and return error code*/
 //#define X_RET_VALIDATE_ERRCODE( expr , errorcode )								\

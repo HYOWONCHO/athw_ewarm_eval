@@ -8,6 +8,8 @@ extern "C"
 
 #include "athw_tpm2_types.h"
 
+#define ATHW_TPM2_HEADER_SZ 		10
+
 typedef struct _tlv_t {
 	uint16_t tag;
 	uint32_t length;

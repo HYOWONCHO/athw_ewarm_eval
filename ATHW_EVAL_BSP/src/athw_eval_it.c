@@ -214,6 +214,36 @@ static void athw_eval_hostspi_init(SPI_HandleTypeDef *spi)
     }
 }
 
+static void athw_eval_tpm_dev_init(void *handle) 
+{ 
+    SPI_HandleTypeDef *h = NULL;
+    
+
+    // if not required the condition, enter to error_handler
+    X_ASSERT_ERRORH((handle != NULL), NULL);
+
+    h = (SPI_HandleTypeDef *)handle;
+
+    h->Instance                 = SPI1;
+    h->Init.Mode                = SPI_MODE_MASTER;
+    h->Init.Direction           = SPI_DIRECTION_2LINES;
+    h->Init.DataSize            = SPI_DATASIZE_8BIT;
+    h->Init.CLKPolarity         = SPI_POLARITY_LOW;
+    h->Init.CLKPhase            = SPI_PHASE_1EDGE;
+    h->Init.NSS                 = SPI_NSS_SOFT;
+    h->Init.BaudRatePrescaler   = SPI_BAUDRATEPRESCALER_32;  //SPI_BAUDRATEPRESCALER_64;
+    h->Init.FirstBit            = SPI_FIRSTBIT_MSB;
+    h->Init.TIMode              = SPI_TIMODE_DISABLE;
+    h->Init.CRCCalculation      = SPI_CRCCALCULATION_DISABLE;
+    h->Init.CRCPolynomial       = 7;
+
+    X_ASSERT_ERRORH((HAL_SPI_Init(h) != HAL_OK), NULL);
+
+
+    return;
+
+}
+
 
 /**
  * @fn HAL_SPI_MspInit - SPI MSP Initialization 
@@ -238,13 +268,14 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
          * PA7  ----->  SPI1_MOSI 
          */
 
-        gpio.Pin = GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7;
+        //gpio.Pin = GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7;
+        gpio.Pin = ATHW_TPM_SPI_SCK | ATHW_TPM_SPI_MISO | ATHW_TPM_SPI_MOSI;
         gpio.Mode = GPIO_MODE_AF_PP;
         gpio.Pull = GPIO_NOPULL; //GPIO_PULLDOWN;
         gpio.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
         gpio.Alternate = GPIO_AF5_SPI1;
 
-        HAL_GPIO_Init(GPIOA, &gpio);
+        HAL_GPIO_Init(ATHW_TPM_SPI_IO_PORT, &gpio);
     }
     else if(hspi->Instance == SPI2) {
         __HAL_RCC_SPI2_CLK_ENABLE();
@@ -430,6 +461,7 @@ int athw_eval_it_init(void *priv)
     athw_eval_gpio_init();
     athw_eval_uart_init(if_hnd->h_debuguart);
     athw_eval_hostspi_init(if_hnd->h_hostspi);
+    athw_eval_tpm_dev_init(if_hnd->h_tpmspi);
 
     printf("ATHW Evaluation Board (Version : 0x%x) Device Init done !!! \r\n",
            ATHW_SYSTEM_VERSION);

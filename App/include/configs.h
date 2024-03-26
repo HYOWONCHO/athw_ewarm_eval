@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 #include "stm32l4xx_hal.h"
+#include <stdint.h>
 
 #define ATHW_SYSTEM_VERSION_MAJOR	0x01 	/*! [31:24] major */
 #define ATHW_SYSTEM_VERSION_MINOR	0x00	/*! [23:16] minor*/
@@ -28,10 +29,24 @@ extern "C" {
 #define ATHW_TPM_SPI_PORT				SPI1
 #define ATHW_TPM_SPI_MODE				SPI_MODE_MASTER
 #define ATHW_TPM_SPI_CS_PORT 			GPIOA
-#define ATHW_TPM_SPI_CS_PIN				PA4
+#define ATHW_TPM_SPI_CS_PIN				GPIO_PIN_4
+
+#define ATHW_TPM_SPI_BANK				SPI1
+#define ATHW_TPM_SPI_IO_PORT			GPIOA
+#define ATHW_TPM_SPI_CS 				GPIO_PIN_4
+#define ATHW_TPM_SPI_SCK 				GPIO_PIN_5
+#define ATHW_TPM_SPI_MISO				GPIO_PIN_6
+#define ATHW_TPM_SPI_MOSI 				GPIO_PIN_7
+ 
+#define ATHW_TPM_SPI_RST 				GPIO_PIN_8
 
 #define ATHW_TPM_SPI_WAIT_RETRY 		50
 #define ATHW_TPM_SPI_TMO 				250					/*! TPM SPI timeout*/
+
+#ifndef ATHW_LOCALITY_DEFAULT
+#define ATHW_LOCALITY_DEFAULT 			0
+#endif
+
 #define ATHW_TPM_SPI_FRAME_SZ			64
 /** }   */
 

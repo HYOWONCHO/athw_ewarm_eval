@@ -32,7 +32,7 @@ static int _athw_tpm2io_ctx_param_check(tpmio_ctx_t *h)
  * 
  * @return On success, return EOK, otherwise return ne 
  */
-static int _athw_tpm2io_spi(void *priv) 
+int athw_tpm2io_spi(void *priv) 
 {
 	int ret = EOK;
 	tpmio_ctx_t *ctx = NULL;
@@ -57,7 +57,7 @@ static int _athw_tpm2io_spi(void *priv)
 
 #ifdef _ATHW_STM32_TPM_
 	__HAL_SPI_ENABLE(handle);
-	HAL_GPIO_WritePin(TPM_SPI_CS_PORT, TPM_SPI_CS_PIN, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(ATHW_TPM_SPI_IO_PORT, ATHW_TPM_SPI_CS, GPIO_PIN_RESET);
 
 	status = HAL_SPI_TransmitReceive(handle, (uint8_t *)ctx->txlv->value,
 									 (uint8_t *)ctx->rxlv->value,
@@ -115,7 +115,7 @@ static int _athw_tpm2io_spi(void *priv)
 errdone:
 
 #ifdef _STM32_TPM_
-	HAL_GPIO_WritePin(TPM_SPI_CS_PORT, TPM_SPI_CS_PIN, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(ATHW_TPM_SPI_IO_PORT, ATHW_TPM_SPI_CS, GPIO_PIN_SET);
 	__HAL_SPI_DISABLE(handle);
 #endif
 
@@ -139,7 +139,18 @@ int athw_tpm2io_i2c(void *priv)
 
 }
 
-
+/**
+ * @gn athw_tpm_io - TPM command transfer and receive
+ * 
+ * @author hyowon.cho (2024-03-15)
+ * 
+ * @param addr   
+ * @param isread 
+ * @param ptr    
+ * @param len    
+ * 
+ * @return int 
+ */
 int athw_tpm_io(uint32_t addr, int isread, void *ptr, int len)
 {
 	int ret = EOK;
@@ -151,7 +162,7 @@ int athw_tpm_io(uint32_t addr, int isread, void *ptr, int len)
 	uint8_t txbuf[ATHW_TPM_SPI_FRAME_SZ + ATHW_TPM_TIS_HEADER_SZ] = { 0, };
 	uint8_t rxbuf[ATHW_TPM_SPI_FRAME_SZ + ATHW_TPM_TIS_HEADER_SZ] = { 0, }; 
 
-
+	X_ASSERT_PARAM((ptr != NULL), ERRNGATE(ESNULLP));
 #if 0
 	ctx = (tpmio_ctx_t *)priv;
 	ret = _athw_tpm2io_ctx_param_check(ctx);
@@ -185,7 +196,7 @@ int athw_tpm_io(uint32_t addr, int isread, void *ptr, int len)
 		
 	}
 
-	ret = _athw_tpm2io_spi((void *)&ctx);
+	ret = athw_tpm2io_spi((void *)&ctx);
 	if(ret != EOK) {
 		goto errdone;
 	}
@@ -211,5 +222,6 @@ errdone:
 //	x_memdestory(rxlv.value);
 	return ret;
 }
+
 
 

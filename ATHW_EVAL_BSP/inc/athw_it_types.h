@@ -13,8 +13,7 @@ extern "C" {
 //#include <stdbool.h>
 
 #include "athw_errno.h"
-#include "x_log.h"
-#include "x_typedef.h"
+#include "x_common.h"
 
 //#define _IFPACKED				(__attribute__((packed)))
 

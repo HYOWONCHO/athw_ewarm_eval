@@ -41,10 +41,10 @@ static TIM_HandleTypeDef TimHandle;
 
 void _pkt_proc_suspend_tick(void) 
 {
-	//__HAL_TIM_DISABLE_IT(&TimHandle, TIM_IT_UPDATE); 
-	//__HAL_TIM_DISABLE(&TimHandle);
+	__HAL_TIM_DISABLE_IT(&TimHandle, TIM_IT_UPDATE); 
+	__HAL_TIM_DISABLE(&TimHandle);
 
-	HAL_TIM_Base_Stop_IT(&TimHandle);
+	//HAL_TIM_Base_Stop_IT(&TimHandle);
 	
 	
 
@@ -52,10 +52,10 @@ void _pkt_proc_suspend_tick(void)
 
 void _pkt_proc_resume_tick(void) 
 {
-	//__HAL_TIM_ENABLE_IT(&TimHandle, TIM_IT_UPDATE);
-	//__HAL_TIM_ENABLE(&TimHandle);
+	__HAL_TIM_ENABLE_IT(&TimHandle, TIM_IT_UPDATE);
+	__HAL_TIM_ENABLE(&TimHandle);
 
-	HAL_TIM_Base_Start_IT(&TimHandle);
+	//HAL_TIM_Base_Start_IT(&TimHandle);
 	
 }
 
@@ -122,8 +122,9 @@ static int _pkt_proc_tim_init(void)
 	is_timbegin = 0;
 	HAL_TIM_Base_Start_IT(&TimHandle);
 
+	delay_ms(100);
 	// Timer update interrupt disable
-	//_pkt_proc_suspend_tick();
+	_pkt_proc_suspend_tick();
 
 	/* Return function status */
 	return -1; 
@@ -131,6 +132,7 @@ static int _pkt_proc_tim_init(void)
 }
 
 static int timer_began = 0;
+extern int athw_tpm2io_spi(void *priv);
 
 /**
   * @brief  Period elapsed callback in non blocking mode
@@ -147,16 +149,24 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	//spi_rx_end = 1;
 
 	//if(timer_began != 0) {
-		HAL_TIM_Base_Stop_IT(htim);
+	HAL_TIM_Base_Stop_IT(htim);
 
-		if(rxcnt > 0) {
+	if(rxcnt > 0) {
 
-			// Wake up the packet processing module
+		tpmio_ctx_t ctx;
+
+
+
+		// Wake up the packet processing module
 		//	if(rxcnt > 4) {
-			_x_print_bin("Incoming", rxbuf, rxcnt);
-			rxcnt = 0;
-			is_timbegin = 0;
-		}
+		_x_print_bin("Incoming", rxbuf, rxcnt);
+		rxcnt = 0;
+		is_timbegin = 0;
+
+		athw_tpm2io_spi();
+	}
+
+
 //	}
 //	else {
 //		timer_began = 1;

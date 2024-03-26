@@ -102,7 +102,7 @@ int main(void)
     athw_if_handle_t ifhnd = {
         .h_debuguart = &dbguart,
         .h_hostspi = &hostspi,
-        //.h_tpmspi = &tpmspi
+        .h_tpmspi = &tpmspi
     };
 
     

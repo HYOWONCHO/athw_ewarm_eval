@@ -9,6 +9,21 @@
 	#define ATHW_TPM2_RET_STR(rc, desc) case ret: return ATHW_TPM2_RET_STRINGIFY(rc)
 #endif
 
+static int athw_tpm2_send_command(athw_tpm2ctx_t *ctx, athw_tpm2pkt_t *pkt) 
+{
+	int ret = EOK;
+
+	X_ASSERT_PARAM((ctx != NULL), ERRNGATE(ESNULLP));
+	X_ASSERT_PARAM((pkt != NULL), ERRNGATE(ESNULLP)); 
+
+	ret = athw_tpm2_tis_sendcmd(ctx, pkt);
+	if(ret != 0) {
+		return ret;
+	}
+
+	return athw_tpm2_pktparse(ret, pkt);
+}
+
 const char* athw_tpm2_get_ret_string(int ret) 
 {
 	if(ret < 0) {
@@ -117,27 +132,46 @@ errdone:
 	return ret;
 }
 
-int athw_tpm2_startup(void *handle, uint16_t *inctx) 
+
+
+
+/**
+ * @fn athw_tpm2_startup - 
+ * 
+ * @author hyowon.cho (2024-03-27)
+ * 
+ * @param handle 
+ * @param type   
+ * 
+ * @return int 
+ */
+int athw_tpm2_startup(void *handle, uint16_t type) 
 {
-	int ret = EOK;
-	athw_tpm2ctx_t *ctx;
+    int ret = EOK;
+    athw_tpm2ctx_t *ctx = (athw_tpm2ctx_t *)handle;
+    athw_tpm2pkt_t pkt;
 
-	X_ASSERT_PARAM((handle != NULL), ERRNGATE(ESNULLP));
-	X_ASSERT_PARAM((inctx != NULL), ERRNGATE(ESNULLP));
+    X_ASSERT_PARAM((ctx != NULL), ERRNGATE(ESNULLP));
+    
+    athw_tpm2_pktinit((void *)ctx, &pkt)
+    athw_tpm2_pktappend_u16((void *)ctx, type);
+    athw_tpm2_pktfinalize(pkt, TPM_ST_NO_SESSIONS, TPM_CC_Startup);
 
+	ret = athw_tpm2_send_command(ctx, &pkt);
 
-
-
-errdone:
-
-	return ret;
+    return ret;
 
 }
+
+
+
+
 
 int athw_tpm2_init(void *handle, int tmotries) 
 {
 	int ret = EOK;
 	athw_tpm2ctx_t *ctx;
+	uint16_t start_type;
 
 	//if(handle == NULL) {
 	//	return ERRNGATE(ESNULLP);
@@ -161,6 +195,15 @@ int athw_tpm2_init(void *handle, int tmotries)
 	tr_log("TPM2 Caps 0x%08x, Did : 0x%04x, Vid : 0x%04x, Rid : 0x%02x \r\r\r\n",
 		   ctx->caps, (ctx->didvid >> 16) & 0xFFFF, ctx->didvid & 0xFFFF, ctx->rid)
 #endif
+
+	start_type = 0x0000;
+	ret = athw_tpm2_startup((void *)ctx, start_type);
+	if(ret != ATHW_TPM_RC_SUCCESS && ret != ATHW_TPM_RC_INITIALIZE) {
+		tr_log("TPM startup failed %d: %s \r\n", ret, athw_tpm2_get_ret_string(ret));
+		goto errdone;
+	}
+
+	tr_log("TPM2_Starup pass \r\r\n"); 
 
 
 

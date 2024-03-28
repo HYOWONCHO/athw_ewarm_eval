@@ -12,6 +12,30 @@ extern "C"
 
 #include <stdint.h>
 
+typedef uint8_t  UINT8;
+typedef uint8_t  BYTE;
+typedef int8_t   INT8;
+#if !defined(BOOL) && !defined(HAVE_BOOL)
+typedef int      BOOL;
+#endif
+typedef uint16_t UINT16;
+typedef int16_t  INT16;
+typedef uint32_t UINT32;
+typedef int32_t  INT32;
+
+#ifndef _W64
+typedef uint64_t UINT64;
+typedef int64_t  INT64;
+#endif
+
+#ifndef YES
+#define YES 1
+#endif
+#ifndef NO
+#define NO 0
+#endif
+
+
 /**
  * Performs a left circular arthmetic shift of x by y value
  * 

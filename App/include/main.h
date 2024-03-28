@@ -11,6 +11,7 @@ extern "C" {
 #include "athw_eval_it.h"
 #include "athw_errno.h"
 #include "x_common.h"
+#include "athw_tpm2_types.h"
 
 
 

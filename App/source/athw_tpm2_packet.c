@@ -313,7 +313,52 @@ int athw_tpm2_pktplace_u32(athw_tpm2pkt_t *pkt, int size)
 
 
     return EOK;
+}
+
+int athw_tpm2_pktparse(int rc, athw_tpm2pkt_t *pkt) 
+{
+    uint32_t temp;
+    uint32_t sz_resp;
+    X_ASSERT_PARAM((pkt != NULL), ERRNGATE(ESNULLP));
+
+    pkt->pos = 0;
+
+    athw_tpm2_pktparse_u16(pkt, NULL);
+    athw_tpm2_pktparse_u32(pkt, &sz_resp);
+    athw_tpm2_pktparse_u32(pkt, &temp);
+
+    pkt->size = sz_resp;
+    rc = temp;
 
 
+    return rc;
 
 }
+
+
+/**
+ * @fn athw_tpm2_pktfinialize - 
+ * 
+ * @author hyowon.cho (2024-03-27)
+ * 
+ * @param pkt    TPM packet structure
+ * @param tag    Tag
+ * @param cc     Command Code
+ * 
+ * @return int 
+ */
+int athw_tpm2_pktfinalize(athw_tpm2pkt_t *pkt, uint16_t tag, uint32_t cc) 
+{
+    uint32_t sz_cmd = pkt->pos;
+    pkt->pos = 0;
+
+    athw_tpm2_pktappend_u16(pkt, tag);
+    athw_tpm2_pktappend_u32(pkt, sz_cmd);
+    athw_tpm2_pktappend_u32(pkt, cc);
+
+    pkt->pos = sz_cmd;
+    return sz_cmd;
+
+}
+
+

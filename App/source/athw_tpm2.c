@@ -163,6 +163,20 @@ int athw_tpm2_startup(void *handle, uint16_t type)
 
 }
 
+int athw_tpm2_selftest(void *handle, uint8_t yes_or_no)
+{
+	athw_tpm2pkt_t pkt;
+	X_ASSERT_PARAM((handle != NULL), ERRNGATE(ESNULLP));
+
+
+	athw_tpm2_pktinit(handle, &pkt);
+	athw_tpm2_pktappend_u8(pkt, yes_or_no);
+	athw_tpm2_pktfinalize(pkt, TPM_ST_NO_SESSIONS, TPM_CC_SelfTest);
+
+	return athw_tpm2_send_command((athw_tpm2ctx_t *)handle, &pkt);
+
+}
+
 
 
 
